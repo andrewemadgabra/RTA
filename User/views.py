@@ -94,7 +94,7 @@ class GroupView(CRUDView):
         output, returned_stutus = self.service().put(request, *args, **kwargs)
         if returned_stutus:
             system_group = self.model.objects.filter(
-                group=id, system=system_id)
+                group=id)
             if len(system_group) > 0:
                 system_group = system_group.first().system_group_id
                 request._full_data = {
