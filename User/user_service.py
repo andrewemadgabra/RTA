@@ -46,6 +46,20 @@ class PermissionsService(CRUDService):
     base_model = Permission
     base_serializer = PermissionBaseSerializer
 
+    def __handel_missing_data_in_permssion(self, request):
+        name = request.data.get('name')
+        request.data['codename'] = name
+        request.data['content_type'] = 1
+        return request
+
+    def post(self, request, *args, **kwargs):
+        request = self.__handel_missing_data_in_permssion(request)
+        return super(PermissionsService, self).post(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        request = self.__handel_missing_data_in_permssion(request)
+        return super(PermissionsService, self).put(request, *args, **kwargs)
+
 
 class UserService(CRUDService):
     base_model = User
