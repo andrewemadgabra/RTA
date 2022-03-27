@@ -4,19 +4,17 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-
 class BaseView(APIView):
     base_model = None
-    base_serializer =  None
+    base_serializer = None
     base_service = None
-
 
     @property
     def model(self):
         if self.base_model is None:
             raise TypeError('base_model was not provided')
         return self.base_model
-    
+
     @property
     def serializer(self):
         if self.base_serializer is None:
@@ -29,7 +27,6 @@ class BaseView(APIView):
             raise TypeError('base_service was not provided')
         return self.base_service
 
-
     def view_validator(self, request):
         return None
 
@@ -39,15 +36,11 @@ class GetView(BaseView):
     get_serializer = None
     get_service = None
 
-
-
     @property
     def get_model_get(self):
         if self.get_model is None:
             return self.model
         return self.get_model
-    
-
 
     @property
     def get_serializer_get(self):
@@ -63,6 +56,7 @@ class GetView(BaseView):
 
     def get(self, request, *args, **kwargs):
         return Response(self.get_service_get().get(request, *args, **kwargs), status=status.HTTP_200_OK)
+
 
 class PostView(BaseView):
     post_model = None
@@ -94,7 +88,6 @@ class PostView(BaseView):
         return Response(ouput, status=returned_stutus)
 
 
-
 class PutView(BaseView):
     put_model = None
     put_serializer = None
@@ -105,7 +98,7 @@ class PutView(BaseView):
         if self.put_model is None:
             return self.model
         return self.put_model
-    
+
     @property
     def get_serializer_put(self):
         if self.put_serializer is None:
@@ -123,6 +116,7 @@ class PutView(BaseView):
         ouput, returned_stutus = self.get_service_put().put(request, *args, **kwargs)
         returned_stutus = status.HTTP_200_OK if returned_stutus else status.HTTP_400_BAD_REQUEST
         return Response(ouput, status=returned_stutus)
+
 
 class DeleteView(BaseView):
     delete_model = None
@@ -155,8 +149,36 @@ class DeleteView(BaseView):
         return Response({"message": messages}, status=return_status)
 
 
+class PatchView(BaseView):
+    patch_model = None
+    patch_serializer = None
+    patch_service = None
+
+    @property
+    def get_model_patch(self):
+        if self.patch_model is None:
+            return self.model
+        return self.patch_model
+
+    @property
+    def get_serializer_patch(self):
+        if self.patch_serializer is None:
+            return self.serializer
+        return self.patch_serializer
+
+    @property
+    def get_service_patch(self):
+        if self.patch_service is None:
+            return self.service
+        return self.patch_service
+
+    def patch(self, request, *args, **kwargs):
+        self.view_validator(request)
+        ouput, returned_stutus = self.get_service_patch().patch(
+            request, *args, **kwargs)
+        returned_stutus = status.HTTP_200_OK if returned_stutus else status.HTTP_400_BAD_REQUEST
+        return Response(ouput, status=returned_stutus)
 
 
-
-class CRUDView(GetView, PostView, PutView, DeleteView):
+class CRUDView(GetView, PostView, PutView, DeleteView, PatchView):
     pass
