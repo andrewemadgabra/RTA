@@ -28,6 +28,13 @@ class BaseService(object):
         except self.model.DoesNotExist:
             return None
 
+    def get_primary_key_field(self, model):
+        if not(model):
+            model = self.base_model
+        for field in model._meta.fields:
+            if field.primary_key:
+                return field.name
+
 
 class GetService(BaseService):
     get_model = None
@@ -104,7 +111,8 @@ class PutService(BaseService):
             return self.put_serializer
 
     def put(self, request, *args, **kwargs):
-        pk = request.data.get(self.get_model_delete._meta.pk.name)
+        pk = self.get_primary_key_field(self.get_model_put)
+        pk = request.data.get(pk)
         obj = self.get_object(pk=pk)
         if not(obj):
             return {"error": ["Object Not Found"]}, False

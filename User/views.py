@@ -1,5 +1,3 @@
-from lib2to3.pgen2 import token
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from User.user_service import (
@@ -10,26 +8,68 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from HelperClasses.GenericView import CRUDView
+from User.models import UserEmploymentJobStatus, SystemGroup
 
 
 # Create your views here.
 
 class UserView(CRUDView):
+    base_model = UserEmploymentJobStatus
     base_service = UserService
     get_service = UserEmploymentJobStatusService
+    post_service = UserEmploymentJobStatusService
+    put_service = UserEmploymentJobStatusService
 
     def post(self, request, *args, **kwargs):
         action_user = request.data.pop('action_user')
-        action_user = request.data.pop('job_id')
-        ouput, returned_stutus = self.service().post(request, *args, **kwargs)
+        job_id = request.data.pop('job_id')
+        employment_id = request.data.pop('employment_id')
+
+        output, returned_stutus = self.service().post(request, *args, **kwargs)
         if returned_stutus:
+            user_id = output['id']
             request._full_data = {
-                ''
+                'action_user':  action_user,
+                'job': job_id,
+                'employment': employment_id,
+                'user': user_id
             }
+            output, returned_stutus = self.get_service_post().post(request, *args, **kwargs)
+            if not(returned_stutus):
+                request._full_data = {
+                    'id': user_id
+                }
+                self.service().delete(request, *args, **kwargs)
+        returned_stutus = status.HTTP_201_CREATED if returned_stutus else status.HTTP_400_BAD_REQUEST
+        return Response(output, status=returned_stutus)
+
+    def put(self, request, *args, **kwargs):
+        action_user = request.data.pop('action_user')
+        job_id = request.data.pop('job_id')
+        employment_id = request.data.pop('employment_id')
+        id = request.data.get('id')
+        output, returned_stutus = self.service().put(request, *args, **kwargs)
+        if returned_stutus:
+            user_job_emp = self.model.objects.filter(
+                user=id, employment=employment_id, job=job_id)
+            if len(user_job_emp) > 0:
+                user_job_emp = user_job_emp.first().user_employment_id
+                request._full_data = {
+                    'user_employment_id': user_job_emp,
+                    'action_user':  action_user,
+                    'job': job_id,
+                    'employment': employment_id,
+                    'user': id
+                }
+                output, returned_stutus = self.get_service_put().put(
+                    request, *args, **kwargs)
+
+        returned_stutus = status.HTTP_200_OK if returned_stutus else status.HTTP_400_BAD_REQUEST
+        return Response(output, status=returned_stutus)
 
 
 class GroupView(CRUDView):
-    base_model = SystemGroupService
+    base_model = SystemGroup
     base_service = GroupsService
     get_service = SystemGroupService
     post_service = SystemGroupService
@@ -37,21 +77,21 @@ class GroupView(CRUDView):
 
     def post(self, request, *args, **kwargs):
         system_id = request.data.pop('system_id')
-        ouput, returned_stutus = self.service().post(request, *args, **kwargs)
+        output, returned_stutus = self.service().post(request, *args, **kwargs)
         if returned_stutus:
-            group_id = ouput['id']
+            group_id = output['id']
             request._full_data = {"group": group_id, "system": system_id}
-            ouput, returned_stutus = self.get_service_post().post(request, *args, **kwargs)
+            output, returned_stutus = self.get_service_post().post(request, *args, **kwargs)
             if not(returned_stutus):
                 request._full_data = {"id": group_id}
                 self.service().delete(request, *args, **kwargs)
         returned_stutus = status.HTTP_201_CREATED if returned_stutus else status.HTTP_400_BAD_REQUEST
-        return Response(ouput, status=returned_stutus)
+        return Response(output, status=returned_stutus)
 
     def put(self, request, *args, **kwargs):
         system_id = request.data.pop('system_id')
         id = request.data.get('id')
-        ouput, returned_stutus = self.service().put(request, *args, **kwargs)
+        output, returned_stutus = self.service().put(request, *args, **kwargs)
         if returned_stutus:
             system_group = self.model.objects.filter(
                 group=id, system=system_id)
@@ -59,9 +99,9 @@ class GroupView(CRUDView):
                 system_group = system_group.first().system_group_id
                 request._full_data = {
                     "system_group_id": system_group, "group": id, "system": system_id}
-                ouput, returned_stutus = self.get_service_put().put(request, *args, **kwargs)
+                output, returned_stutus = self.get_service_put().put(request, *args, **kwargs)
         returned_stutus = status.HTTP_200_OK if returned_stutus else status.HTTP_400_BAD_REQUEST
-        return Response(ouput, status=returned_stutus)
+        return Response(output, status=returned_stutus)
 
 
 class SystemView(CRUDView):

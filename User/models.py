@@ -66,7 +66,6 @@ class User(AbstractBaseUser, PermissionsMixin, AbstractDateModels):
     def update_user_permissions(self):
         self.user_permissions.clear()
         groups = self.groups.all()
-        print(groups)
         for group in groups:
             permissions = group.permissions.all()
             for permission in permissions:
@@ -136,7 +135,8 @@ class SystemGroup(AbstractDateModels):
 
 
 class UserEmploymentJobStatus(AbstractDateModels):
-    user_employment_id = models.AutoField(primary_key=True)
+    user_employment_id = models.AutoField(
+        primary_key=True, db_column='user_employment_id')
     user = models.OneToOneField(User, models.CASCADE,
                                 related_name="employment_user",  db_column="user_id")
     employment = models.ForeignKey(

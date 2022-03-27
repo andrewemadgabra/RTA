@@ -113,6 +113,8 @@ class UserEmploymentJobStatusService(CRUDService):
     get_serializer = UserEmploymentJobStatusAllFSerializer
     get_model = UserEmploymentJobStatus
     post_serializer = UserEmploymentJobStatusSerializer
+    put_model = UserEmploymentJobStatus
+    put_serializer = UserEmploymentJobStatusSerializer
 
     def get(self, request, *args, **kwargs):
         data = self.get_model_get.objects.all().select_related(

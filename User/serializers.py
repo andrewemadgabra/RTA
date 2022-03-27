@@ -5,7 +5,6 @@ from EmploymentStatus.serializers import EmploymentStatusSerializer
 from Jobs.serializers import JobsSerializer
 
 
-
 class PermissionBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
@@ -15,12 +14,13 @@ class PermissionBaseSerializer(serializers.ModelSerializer):
             'content_type': {'write_only': True},
             'codename':  {'write_only': True}
         }
+
+
 class GroupBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ('id', 'name', 'permissions',)
         read_only_fields = ('id',)
-        
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
@@ -35,9 +35,6 @@ class BaseUserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             password=validated_data['password'],
             is_superuser=validated_data['is_superuser'],
-            is_active=validated_data['is_active'],
-            is_staff=validated_data['is_staff'],
-            is_admin=validated_data['is_admin'],
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data['first_name'],
@@ -45,7 +42,6 @@ class BaseUserSerializer(serializers.ModelSerializer):
             middle_name=validated_data['middle_name'],
             gender=validated_data['gender'],
             number_of_identification=validated_data['number_of_identification'],
-            home_address=validated_data['home_address'],
             mobile=validated_data['mobile'],
         )
         user.groups.set(validated_data['groups'])
@@ -83,16 +79,17 @@ class SystemGroupAllFSerializer(serializers.ModelSerializer):
 
 
 class UserEmploymentJobStatusSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = UserEmploymentJobStatus
         fields = "__all__"
         read_only_fields = ('id', 'created_at')
 
+
 class UserEmploymentJobStatusAllFSerializer(serializers.ModelSerializer):
-    user =  BaseUserSerializer()
+    user = BaseUserSerializer()
     employment = EmploymentStatusSerializer()
-    job =  JobsSerializer()
+    job = JobsSerializer()
 
     class Meta:
         model = UserEmploymentJobStatus
