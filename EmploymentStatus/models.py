@@ -16,4 +16,5 @@ class EmploymentStatus(AbstractDateModels):
     def __str__(self):
         return self.employment_title_En
 
-
+    def __repr__(self):
+        return self.employment_title_En

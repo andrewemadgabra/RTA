@@ -17,3 +17,5 @@ class Jobs(AbstractDateModels):
     def __str__(self):
         return self.job_title_En
 
+    def __repr__(self):
+        return self.job_title_En

@@ -3,37 +3,29 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from User.user_service import (
-    UserService, GroupsService, PermissionsService, SystemService, SystemGroupService)
+    UserService, GroupsService, PermissionsService, SystemService, SystemGroupService, UserEmploymentJobStatusService)
 from knox.views import LoginView as KnoxLoginView, LogoutView as KnoxLogoutView
 from knox.models import AuthToken
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from User.models import SystemGroup
 from HelperClasses.GenericView import CRUDView
 
 
 # Create your views here.
 
-class UserView(APIView):
-    def get(self, request, *args, **kwargs):
-        return Response(UserService().get(request, *args, **kwargs), status=status.HTTP_200_OK)
+class UserView(CRUDView):
+    base_service = UserService
+    get_service = UserEmploymentJobStatusService
 
     def post(self, request, *args, **kwargs):
-        ouput, returned_stutus = UserService().post(request, *args, **kwargs)
-        returned_stutus = status.HTTP_201_CREATED if returned_stutus else status.HTTP_400_BAD_REQUEST
-        return Response(ouput, status=returned_stutus)
-
-    def delete(self, request, *args, **kwargs):
-        return_status = UserService().delete(request, *args, **kwargs)
-        messages = "Successfuly Deleted" if return_status else "Not Found"
-        return_status = status.HTTP_204_NO_CONTENT if return_status else status.HTTP_400_BAD_REQUEST
-        return Response({"message": messages}, status=return_status)
-
-    def put(self, request, *args, **kwargs):
-        ouput, returned_stutus = UserService().put(request, *args, **kwargs)
-        returned_stutus = status.HTTP_200_OK if returned_stutus else status.HTTP_400_BAD_REQUEST
-        return Response(ouput, status=returned_stutus)
+        action_user = request.data.pop('action_user')
+        action_user = request.data.pop('job_id')
+        ouput, returned_stutus = self.service().post(request, *args, **kwargs)
+        if returned_stutus:
+            request._full_data = {
+                ''
+            }
 
 
 class GroupView(CRUDView):
@@ -104,9 +96,4 @@ class Login(KnoxLoginView):
 
 
 class Logout(KnoxLogoutView):
-    pass
-
-
-class ABC(CRUDView):
-
     pass

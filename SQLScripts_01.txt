@@ -134,19 +134,6 @@ CREATE TABLE Jobs(
 )
 
 
-CREATE TABLE UserJobs(
-[created_at] DATETIME NOT NULL , 
-[modified_at] DATETIME  NULL , 
-[user_job_id] INT PRIMARY KEY IDENTITY(1,1), 
-[user_id] INT NOT NULL FOREIGN KEY REFERENCES User_User([id])  ON DELETE CASCADE
-ON UPDATE CASCADE, 
-[job_id] INT NOT NULL FOREIGN KEY REFERENCES Jobs([job_id])  ON DELETE CASCADE
-ON UPDATE CASCADE, 
-[action_user] INT NOT NULL FOREIGN KEY REFERENCES User_User([id]), 
-CONSTRAINT UC_User_Jobs UNIQUE ([job_id],[user_id])
-)
-
-
 CREATE TABLE EmploymentStatus(
 [created_at] DATETIME NOT NULL , 
 [modified_at] DATETIME  NULL , 
@@ -157,13 +144,15 @@ CREATE TABLE EmploymentStatus(
 
 
 
-CREATE TABLE UserEmploymentStatus(
+CREATE TABLE UserEmploymentJobStatus(
 [created_at] DATETIME NOT NULL , 
 [modified_at] DATETIME  NULL , 
 [user_employment_id] INT PRIMARY KEY IDENTITY(1,1), 
 [user_id] INT NOT NULL FOREIGN KEY REFERENCES User_User([id])  ON DELETE CASCADE
 ON UPDATE CASCADE, 
 [employment_id] INT NOT NULL FOREIGN KEY REFERENCES EmploymentStatus([employment_id])  ON DELETE CASCADE
+ON UPDATE CASCADE, 
+[job_id] INT NOT NULL FOREIGN KEY REFERENCES Jobs([job_id])  ON DELETE CASCADE
 ON UPDATE CASCADE, 
 [action_user] INT NOT NULL FOREIGN KEY REFERENCES User_User([id]), 
 CONSTRAINT UC_User_EmploymentStatus UNIQUE ([employment_id],[user_id])

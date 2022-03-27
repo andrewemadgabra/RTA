@@ -59,6 +59,9 @@ class User(AbstractBaseUser, PermissionsMixin, AbstractDateModels):
     def __str__(self):
         return "{} | {}".format(self.full_Name, self.username)
 
+    def __repr__(self):
+        return "{} | {}".format(self.full_Name, self.username)
+
     @transaction.atomic
     def update_user_permissions(self):
         self.user_permissions.clear()
@@ -110,6 +113,9 @@ class System(AbstractDateModels):
     def __str__(self):
         return self.system_en
 
+    def __repr__(self):
+        return self.system_en
+
 
 class SystemGroup(AbstractDateModels):
     system_group_id = models.AutoField(primary_key=True)
@@ -125,15 +131,19 @@ class SystemGroup(AbstractDateModels):
     def __str__(self):
         return "{} | {}".format(self.group.name, self.system.system_en)
 
+    def __repr__(self):
+        return "{} | {}".format(self.group.name, self.system.system_en)
+
 
 class UserEmploymentJobStatus(AbstractDateModels):
     user_employment_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(User, models.CASCADE,
-                                related_name="employment_user",  db_column ="user_id")
-    employment = models.ForeignKey(EmploymentStatus, models.CASCADE, db_column ="employment_id")
-    job = models.ForeignKey(Jobs, models.CASCADE, db_column ="job_id")
+                                related_name="employment_user",  db_column="user_id")
+    employment = models.ForeignKey(
+        EmploymentStatus, models.CASCADE, db_column="employment_id")
+    job = models.ForeignKey(Jobs, models.CASCADE, db_column="job_id")
     action_user = models.ForeignKey(
-        User, models.CASCADE, related_name="creator_user_emp", db_column ="action_user")
+        User, models.CASCADE, related_name="creator_user_emp", db_column="action_user")
 
     class Meta:
         managed = False

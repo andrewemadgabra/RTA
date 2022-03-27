@@ -20,15 +20,13 @@ class BaseService(object):
             raise TypeError('base_serializer was not provided')
         else:
             return self.base_serializer
-    
+
     def get_object(self, pk):
         try:
             obj = self.model.objects.get(pk=pk)
             return obj
         except self.model.DoesNotExist:
             return None
-
-    
 
 
 class GetService(BaseService):
@@ -52,14 +50,10 @@ class GetService(BaseService):
     def get_modeled_data(self, request, *args, **kwargs):
         return self.get_model_get.objects.all()
 
-
-    def get(self, request, data = None ,*args, **kwargs):
+    def get(self, request, data=None, *args, **kwargs):
         if not(data):
             data = self.get_modeled_data(request, *args, **kwargs)
         return self.get_serializer_get(data, many=True).data
-
-    
-
 
 
 class PostService(BaseService):
@@ -80,18 +74,15 @@ class PostService(BaseService):
         else:
             return self.post_serializer
 
-
     def post(self, request, *args, **kwargs):
         self.validate_service(request)
-        if request.method == 'POST':
-            object_to_save = self.get_serializer_post(
-                data=request.data)
-            if object_to_save.is_valid():
-                object_to_save.save()
-                return object_to_save.data, True
-            else:
-                return object_to_save.errors, False
-
+        object_to_save = self.get_serializer_post(
+            data=request.data)
+        if object_to_save.is_valid():
+            object_to_save.save()
+            return object_to_save.data, True
+        else:
+            return object_to_save.errors, False
 
 
 class PutService(BaseService):
@@ -112,20 +103,18 @@ class PutService(BaseService):
         else:
             return self.put_serializer
 
-
     def put(self, request, *args, **kwargs):
         pk = request.data.get(self.get_model_delete._meta.pk.name)
         obj = self.get_object(pk=pk)
         if not(obj):
             return {"error": ["Object Not Found"]}, False
         object_to_save = self.get_serializer_put(instance=obj,
-                                             data=request.data)
+                                                 data=request.data)
         if object_to_save.is_valid():
             object_to_save.save()
             return object_to_save.data, True
         else:
             return object_to_save.errors, False
-
 
 
 class DeleteService(BaseService):
@@ -152,7 +141,6 @@ class DeleteService(BaseService):
         else:
             return self.put_serializer
 
-
     def delete(self, request, *args, **kwargs):
         pk = request.data.get(self.get_model_delete._meta.pk.name)
         obj = self.get_model_delete.objects.filter(pk=pk)
@@ -160,12 +148,11 @@ class DeleteService(BaseService):
         if status:
             obj.delete()
         return status
-    
-
 
 
 class CRUDService(GetService, PostService, PutService, DeleteService):
     pass
+
 
 class CRService(GetService, PostService):
     pass
