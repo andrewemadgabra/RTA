@@ -51,7 +51,7 @@ class UserView(CRUDView):
         output, returned_stutus = self.service().put(request, *args, **kwargs)
         if returned_stutus:
             user_job_emp = self.model.objects.filter(
-                user=id, employment=employment_id, job=job_id)
+                user=id)
             if len(user_job_emp) > 0:
                 user_job_emp = user_job_emp.first().user_employment_id
                 request._full_data = {
