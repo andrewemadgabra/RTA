@@ -25,7 +25,7 @@ class User(AbstractBaseUser, PermissionsMixin, AbstractDateModels):
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(null=True, blank=True)
     is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     username = models.CharField(unique=True, max_length=30)

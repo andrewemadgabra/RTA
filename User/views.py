@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from HelperClasses.GenericView import CRUDView
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
 from User.serializers import (BaseUserSerializer, GroupSerializer,
-                              BasePermissionSerializer, SystemSerializer, UserSerializer)
+                              BasePermissionSerializer, SystemSerializer)
 from django.contrib.auth.models import (Group, Permission)
 
 
@@ -16,7 +16,7 @@ from django.contrib.auth.models import (Group, Permission)
 
 class UserView(CRUDView):
     base_model = User
-    base_Serializer = UserSerializer
+    base_Serializer = BaseUserSerializer
 
 
 class GroupView(CRUDView):
