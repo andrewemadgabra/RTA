@@ -1,9 +1,9 @@
 from django.urls import path, include
-from User.views import GroupView, PermissionView, Login, Logout, SystemView  # UserView,
+from User.views import GroupView, PermissionView, Login, Logout, SystemView, UserView
 
 
 urlpatterns = [
-    #path('', UserView.as_view()),
+    path('', UserView.as_view()),
     path('system/', SystemView.as_view()),
     path('groups/', GroupView.as_view()),
     path('permission/', PermissionView.as_view()),

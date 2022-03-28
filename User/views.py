@@ -8,66 +8,15 @@ from django.contrib.auth import get_user_model
 from HelperClasses.GenericView import CRUDView
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
 from User.serializers import (BaseUserSerializer, GroupSerializer,
-                              BasePermissionSerializer, SystemSerializer)
+                              BasePermissionSerializer, SystemSerializer, UserSerializer)
 from django.contrib.auth.models import (Group, Permission)
-from django.db.models import F as model_function
 
 
 # Create your views here.
 
-# class UserView(CRUDView):
-#     base_model = UserEmploymentJobStatus
-#     base_service = UserService
-#     get_service = UserEmploymentJobStatusService
-#     post_service = UserEmploymentJobStatusService
-#     put_service = UserEmploymentJobStatusService
-
-#     def post(self, request, *args, **kwargs):
-#         action_user = request.data.pop('action_user')
-#         job_id = request.data.pop('job_id')
-#         employment_id = request.data.pop('employment_id')
-
-#         output, returned_stutus = self.service().post(request, *args, **kwargs)
-#         if returned_stutus:
-#             user_id = output['id']
-#             request._full_data = {
-#                 'action_user':  action_user,
-#                 'job': job_id,
-#                 'employment': employment_id,
-#                 'user': user_id
-#             }
-#             output, returned_stutus = self.get_service_post().post(request, *args, **kwargs)
-#             if not(returned_stutus):
-#                 request._full_data = {
-#                     'id': user_id
-#                 }
-#                 self.service().delete(request, *args, **kwargs)
-#         returned_stutus = status.HTTP_201_CREATED if returned_stutus else status.HTTP_400_BAD_REQUEST
-#         return Response(output, status=returned_stutus)
-
-#     def put(self, request, *args, **kwargs):
-#         action_user = request.data.pop('action_user')
-#         job_id = request.data.pop('job_id')
-#         employment_id = request.data.pop('employment_id')
-#         id = request.data.get('id')
-#         output, returned_stutus = self.service().put(request, *args, **kwargs)
-#         if returned_stutus:
-#             user_job_emp = self.model.objects.filter(
-#                 user=id)
-#             if len(user_job_emp) > 0:
-#                 user_job_emp = user_job_emp.first().user_employment_id
-#                 request._full_data = {
-#                     'user_employment_id': user_job_emp,
-#                     'action_user':  action_user,
-#                     'job': job_id,
-#                     'employment': employment_id,
-#                     'user': id
-#                 }
-#                 output, returned_stutus = self.get_service_put().put(
-#                     request, *args, **kwargs)
-
-#         returned_stutus = status.HTTP_200_OK if returned_stutus else status.HTTP_400_BAD_REQUEST
-#         return Response(output, status=returned_stutus)
+class UserView(CRUDView):
+    base_model = User
+    base_Serializer = UserSerializer
 
 
 class GroupView(CRUDView):

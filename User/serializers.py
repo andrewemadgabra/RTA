@@ -3,6 +3,8 @@ from User.models import User, System, SystemGroup, UserEmploymentJobStatus
 from django.contrib.auth.models import (Group, Permission)
 from EmploymentStatus.serializers import EmploymentStatusSerializer
 from Jobs.serializers import JobsSerializer
+from Jobs.models import Jobs
+from EmploymentStatus.models import EmploymentStatus
 from django.db import transaction
 
 
@@ -116,3 +118,45 @@ class GroupSerializer(serializers.Serializer):
         if group_to_save.is_valid():
             group_to_save.save()
         return validated_data
+
+
+class UserSerializer(serializers.Serializer):
+    CHOICES = (("M", "Male"), ("F", "Female"))
+    id = serializers.IntegerField(min_value=0, read_only=True)
+    password = serializers.CharField(max_length=128, write_only=True)
+    last_login = serializers.DateTimeField(required=False)
+    is_superuser = serializers.BooleanField(default=False, write_only=True)
+    is_active = serializers.BooleanField(default=True, write_only=True)
+    is_staff = serializers.BooleanField(default=False, write_only=True)
+    is_admin = serializers.BooleanField(default=False, write_only=True)
+    username = serializers.CharField(max_length=30)
+    email = serializers.EmailField(max_length=128)
+    first_name = serializers.CharField(max_length=30)
+    last_name = serializers.CharField(max_length=30)
+    middle_name = serializers.CharField(max_length=30)
+    gender = serializers.MultipleChoiceField(choices=CHOICES)
+    number_of_identification = serializers.CharField(max_length=14)
+    home_address = serializers.CharField(max_length=45, required=False)
+    mobile = serializers.CharField(max_length=14)
+    groups = serializers.ListField(
+        child=serializers.IntegerField(min_value=0, required=True)
+    )
+    employment_id = serializers.IntegerField(min_value=0)
+    job_id = serializers.IntegerField(min_value=0)
+
+    def validate_employment_id(self, instance):
+        if len(EmploymentStatus.objects.filter(employment_id=instance)) != 1:
+            raise ValueError('Not a valid employment_id')
+        return instance
+
+    def validate_job_id(self, instance):
+        if len(Jobs.objects.filter(job_id=instance)) != 1:
+            raise ValueError('Not a valid job_id')
+        return instance
+
+    def validate(self, attrs):
+        return super(UserSerializer, self).validate(attrs)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        pass
