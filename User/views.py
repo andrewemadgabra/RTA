@@ -18,17 +18,20 @@ from django.contrib.auth.models import (Group, Permission)
 
 class UserView(CRUDView):
     base_model = User
-    base_Serializer = BaseUserSerializer
+    base_serializer = BaseUserSerializer
 
 
 class UserEmploymentJobStatus(CRUView):
     base_model = UserEmploymentJobStatus
-    base_Serializer = UserEmploymentJobStatusSerializer
+    base_serializer = UserEmploymentJobStatusSerializer
 
 
 class GroupView(CRUDView):
     base_model = Group
     base_serializer = BaseGroupSerializer
+
+    def __get_permissions(self, groups, serialized_groups):
+        pass
 
 
 class SystemView(CRUDView):
