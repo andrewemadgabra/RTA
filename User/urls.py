@@ -5,7 +5,7 @@ from User.views import (GroupView, PermissionView, Login, Logout, SystemView,
 
 urlpatterns = [
     path('', UserView.as_view()),
-    path('user_assign_job', UserEmploymentJobStatus.as_view()),
+    path('user_assign_job/', UserEmploymentJobStatus.as_view()),
     path('system/', SystemView.as_view()),
     path('groups/', GroupView.as_view()),
     path('groups_system/', SystemGroupView.as_view()),
