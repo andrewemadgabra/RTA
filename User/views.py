@@ -5,18 +5,25 @@ from knox.models import AuthToken
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from HelperClasses.GenericView import CRUDView
+from HelperClasses.GenericView import CRUDView, CRUView
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
 from User.serializers import (BaseUserSerializer, GroupSerializer,
-                              BasePermissionSerializer, SystemSerializer)
+                              BasePermissionSerializer, SystemSerializer,
+                              UserEmploymentJobStatusSerializer)
 from django.contrib.auth.models import (Group, Permission)
 
 
 # Create your views here.
 
+
 class UserView(CRUDView):
     base_model = User
     base_Serializer = BaseUserSerializer
+
+
+class UserEmploymentJobStatus(CRUView):
+    base_model = UserEmploymentJobStatus
+    base_Serializer = UserEmploymentJobStatusSerializer
 
 
 class GroupView(CRUDView):

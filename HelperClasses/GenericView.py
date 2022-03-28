@@ -322,3 +322,7 @@ class PatchView(BaseView):
 
 class CRUDView(GetView, PostView, PutView, DeleteView, PatchView):
     pass
+
+
+class CRUView(GetView, PostView, PutView, PatchView):
+    pass

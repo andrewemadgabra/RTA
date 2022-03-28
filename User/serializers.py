@@ -122,3 +122,9 @@ class UserEmploymentJobStatusSerializer(serializers.ModelSerializer):
         model = UserEmploymentJobStatus
         fields = "__all__"
         read_only_fields = ('id', 'created_at')
+
+    def create(self, validated_data):
+        user = User.objects.get(id=validated_data['user'])
+        user.is_active = True
+        user.save()
+        return super(UserEmploymentJobStatusSerializer, self).create(validated_data)
