@@ -7,8 +7,8 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from HelperClasses.GenericView import CRUDView, CRUView
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
-from User.serializers import (BaseUserSerializer, BaseGroupSerializer,
-                              BasePermissionSerializer, SystemSerializer,
+from User.serializers import (BaseUserSerializer, BaseGroupSerializer, BaseGroupPermissionSerializer,
+                              BasePermissionSerializer, SystemSerializer, SystemGroupGETSerializer,
                               UserEmploymentJobStatusSerializer, SystemGroupSerializer)
 from django.contrib.auth.models import (Group, Permission)
 
@@ -29,9 +29,13 @@ class UserEmploymentJobStatus(CRUView):
 class GroupView(CRUDView):
     base_model = Group
     base_serializer = BaseGroupSerializer
+    get_serializer = BaseGroupPermissionSerializer
 
-    def __get_permissions(self, groups, serialized_groups):
-        pass
+
+class SystemGroupView(CRUView):
+    base_model = SystemGroup
+    base_serializer = SystemGroupSerializer
+    get_serializer = SystemGroupGETSerializer
 
 
 class SystemView(CRUDView):
@@ -56,11 +60,6 @@ class PermissionView(CRUDView):
     def put(self, request, *args, **kwargs):
         request = self.__handel_missing_data_in_permssion(request)
         return super(PermissionView, self).put(request, *args, **kwargs)
-
-
-class SystemGroupView(CRUView):
-    base_model = SystemGroup
-    base_serializer = SystemGroupSerializer
 
 
 class Login(KnoxLoginView):

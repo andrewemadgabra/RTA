@@ -20,4 +20,6 @@ urlpatterns = [
     path('user/', include("User.urls")),
     path('employemntstatus/', include("EmploymentStatus.urls")),
     path('jobs/', include("Jobs.urls")),
+    path('actors/', include("Actors.urls")),
+    path('periority/', include("Periority.urls")),
 ]

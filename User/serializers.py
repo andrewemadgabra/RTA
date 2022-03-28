@@ -22,6 +22,15 @@ class BaseGroupSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
+class BaseGroupPermissionSerializer(serializers.ModelSerializer):
+    permissions = BasePermissionSerializer(many=True)
+
+    class Meta:
+        model = Group
+        fields = ('id', 'name', 'permissions',)
+        read_only_fields = ('id',)
+
+
 class BaseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -61,6 +70,15 @@ class SystemSerializer(serializers.ModelSerializer):
 
 
 class SystemGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SystemGroup
+        fields = "__all__"
+        read_only_fields = ('id', 'created_at')
+
+
+class SystemGroupGETSerializer(serializers.ModelSerializer):
+    system = SystemSerializer()
+
     class Meta:
         model = SystemGroup
         fields = "__all__"

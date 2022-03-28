@@ -97,7 +97,7 @@ class GetView(BaseView):
                         if provided then this data will be used to be serialized
         """
         if model is None:
-            model = self.model
+            model = self.get_model_get
         if not(data):
             data = self.get_modeled_data(
                 request=request, pk=pk, model=model, filed_name=filed_name, field_value=field_value,
@@ -105,8 +105,9 @@ class GetView(BaseView):
         return self.get_serializer_get(data, many=True).data
 
     def get(self, request, pk=None, modeled_response=False,
-            debug=False, **kwargs):
-        data = self.get_modeled_data(request, pk=pk, debug=debug)
+            debug=False, data=None, **kwargs):
+        if data is None:
+            data = self.get_modeled_data(request, pk=pk, debug=debug)
         serlized_data = self.get_serialized_data(
             request, data=data, pk=pk, debug=debug)
         return Response(serlized_data, status=return_status.HTTP_200_OK)

@@ -44,12 +44,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    #'rest_framework',
+    # 'rest_framework',
     'django_rest_passwordreset',
     'knox',
     'User',
     'Jobs',
     'EmploymentStatus',
+    'Actors',
+    'Periority',
 
 ]
 
@@ -175,12 +177,13 @@ REST_KNOX = {'TOKEN_TTL': timedelta(hours=24),
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Africa/Cairo'
+DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
