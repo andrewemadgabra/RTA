@@ -7,9 +7,9 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from HelperClasses.GenericView import CRUDView, CRUView
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
-from User.serializers import (BaseUserSerializer, GroupSerializer,
+from User.serializers import (BaseUserSerializer, BaseGroupSerializer,
                               BasePermissionSerializer, SystemSerializer,
-                              UserEmploymentJobStatusSerializer)
+                              UserEmploymentJobStatusSerializer, SystemGroupSerializer)
 from django.contrib.auth.models import (Group, Permission)
 
 
@@ -28,30 +28,7 @@ class UserEmploymentJobStatus(CRUView):
 
 class GroupView(CRUDView):
     base_model = Group
-    base_serializer = GroupSerializer
-    get_model = SystemGroup
-
-    def get(self, request, pk=None):
-        g_model = self.get_model_get
-        b_model = self.model
-        g_serializer = self.get_serializer_get
-        groups_systems = (g_model.objects.all().prefetch_related(
-            'group', 'system')
-            .values('group__id', 'group__name', 'system__system_id', 'system__system_ar'))
-        data_to_serializer = []
-        for group_system in groups_systems:
-            data_to_serializer.append(
-                {
-                    "system_id": group_system['system__system_id'],
-                    "system_name":  group_system['system__system_ar'],
-                    "id": group_system['group__id'],
-                    "name": group_system['group__name'],
-                    "permissions": [permission['id'] for permission in b_model.objects.get(
-                        id=group_system['group__id']).permissions.all().values('id')]
-                }
-            )
-        serlized_data = g_serializer(data_to_serializer, many=True)
-        return Response(serlized_data.data, status=status.HTTP_200_OK)
+    base_serializer = BaseGroupSerializer
 
 
 class SystemView(CRUDView):
@@ -76,6 +53,11 @@ class PermissionView(CRUDView):
     def put(self, request, *args, **kwargs):
         request = self.__handel_missing_data_in_permssion(request)
         return super(PermissionView, self).put(request, *args, **kwargs)
+
+
+class SystemGroupView(CRUView):
+    base_model = SystemGroup
+    base_serializer = SystemGroupSerializer
 
 
 class Login(KnoxLoginView):
