@@ -1,12 +1,10 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from Jobs.jobs_service import JobsService
+from Jobs.models import Jobs
+from Jobs.serializers import JobsSerializer
 from HelperClasses.GenericView import CRUDView
 
 # Create your views here.
 
 
 class JobsView(CRUDView):
-    base_service = JobsService
-
+    base_model = Jobs
+    base_serializer = JobsSerializer

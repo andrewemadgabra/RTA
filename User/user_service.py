@@ -1,7 +1,7 @@
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
-from User.serializers import (BaseUserSerializer, GroupBaseSerializer,
-                              PermissionBaseSerializer, SystemBaseSerializer,
-                              SystemGroupBaseSerializer, SystemGroupAllFSerializer,
+from User.serializers import (BaseUserSerializer, BaseGroupSerializer,
+                              BasePermissionSerializer, SystemSerializer,
+                              SystemBaseGroupSerializer, SystemGroupAllFSerializer,
                               UserEmploymentJobStatusSerializer, UserEmploymentJobStatusAllFSerializer)
 from django.contrib.auth.models import (Group, Permission)
 from HelperClasses.GenericService import CRUDService
@@ -9,23 +9,23 @@ from HelperClasses.GenericService import CRUDService
 
 class GroupsService(CRUDService):
     base_model = Group
-    base_serializer = GroupBaseSerializer
+    base_serializer = BaseGroupSerializer
 
 
 class SystemService(CRUDService):
     base_model = System
-    base_serializer = SystemBaseSerializer
+    base_serializer = SystemSerializer
 
 
 class SystemGroupService(CRUDService):
     base_model = SystemGroup
-    base_serializer = SystemGroupBaseSerializer
+    base_serializer = SystemBaseGroupSerializer
     get_serializer = SystemGroupAllFSerializer
 
     def __get_permissions_serlized(self, groups, groupsSerilzed):
         for index, group in enumerate(groups):
             groupsSerilzed[index]['group'].pop('permissions')
-            groupsSerilzed[index]['group']['permissions'] = (PermissionBaseSerializer(
+            groupsSerilzed[index]['group']['permissions'] = (BasePermissionSerializer(
                 group.group.permissions.all(), many=True).data)
 
         return groupsSerilzed
@@ -43,7 +43,7 @@ class SystemGroupService(CRUDService):
 
 class PermissionsService(CRUDService):
     base_model = Permission
-    base_serializer = PermissionBaseSerializer
+    base_serializer = BasePermissionSerializer
 
     def __handel_missing_data_in_permssion(self, request):
         name = request.data.get('name')
@@ -67,7 +67,7 @@ class UserService(CRUDService):
     def __get_permissions_serlized(self, users, usersSerlizer):
         for index, user in enumerate(users):
             usersSerlizer[index].pop('user_permissions')
-            usersSerlizer[index]['user_permissions'] = (PermissionBaseSerializer(
+            usersSerlizer[index]['user_permissions'] = (BasePermissionSerializer(
                 user.user_permissions.all(), many=True).data)
 
         return users
@@ -75,17 +75,17 @@ class UserService(CRUDService):
     def __get_groups_serlized(self, users, usersSerlizer):
         for index, user in enumerate(users):
             usersSerlizer[index].pop('groups')
-            usersSerlizer[index]['groups'] = (GroupBaseSerializer(
+            usersSerlizer[index]['groups'] = (BaseGroupSerializer(
                 user.groups.all(), many=True).data)
         return usersSerlizer
 
     def __get_groups_permissions_serlized(self, users, usersSerlizer):
         for index, user in enumerate(users):
             usersSerlizer[index].pop('groups')
-            usersSerlizer[index]['groups'] = (GroupBaseSerializer(
+            usersSerlizer[index]['groups'] = (BaseGroupSerializer(
                 user.groups.all(), many=True).data)
             usersSerlizer[index].pop('user_permissions')
-            usersSerlizer[index]['user_permissions'] = (PermissionBaseSerializer(
+            usersSerlizer[index]['user_permissions'] = (BasePermissionSerializer(
                 user.user_permissions.all(), many=True).data)
         return usersSerlizer
 
