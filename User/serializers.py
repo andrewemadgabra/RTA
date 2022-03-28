@@ -16,8 +16,6 @@ class BasePermissionSerializer(serializers.ModelSerializer):
 
 
 class BaseGroupSerializer(serializers.ModelSerializer):
-    permissions = BasePermissionSerializer()
-
     class Meta:
         model = Group
         fields = ('id', 'name', 'permissions',)
