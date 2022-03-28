@@ -3,9 +3,10 @@ from User.models import User, System, SystemGroup, UserEmploymentJobStatus
 from django.contrib.auth.models import (Group, Permission)
 from EmploymentStatus.serializers import EmploymentStatusSerializer
 from Jobs.serializers import JobsSerializer
+from django.db import transaction
 
 
-class PermissionBaseSerializer(serializers.ModelSerializer):
+class BasePermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
         fields = "__all__"
@@ -16,7 +17,7 @@ class PermissionBaseSerializer(serializers.ModelSerializer):
         }
 
 
-class GroupBaseSerializer(serializers.ModelSerializer):
+class BaseGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ('id', 'name', 'permissions',)
@@ -54,44 +55,64 @@ class BaseUserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class SystemBaseSerializer(serializers.ModelSerializer):
+class SystemSerializer(serializers.ModelSerializer):
     class Meta:
         model = System
         fields = "__all__"
         read_only_fields = ('id', 'created_at')
 
 
-class SystemGroupBaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SystemGroup
-        fields = "__all__"
-        read_only_fields = ('id', 'created_at')
+class GroupSerializer(serializers.Serializer):
+    system_id = serializers.IntegerField(min_value=0)
+    system_name = serializers.CharField(max_length=128)
+    id = serializers.IntegerField(min_value=0, read_only=True)
+    name = serializers.CharField(max_length=128)
+    permissions = serializers.ListField(
+        child=serializers.IntegerField(min_value=0, required=True))
 
+    def validate_system_id(self, instance):
+        valid_system_id = System.objects.filter(system_id=instance)
+        if len(valid_system_id) != 1:
+            raise serializers.ValidationError("Not a valid system_id")
 
-class SystemGroupAllFSerializer(serializers.ModelSerializer):
-    group = GroupBaseSerializer()
-    system = SystemBaseSerializer()
+        return instance
 
-    class Meta:
-        model = SystemGroup
-        fields = "__all__"
-        read_only_fields = ('id', 'created_at')
+    def validate_name(self, instance):
+        group = Group.objects.filter(name=instance)
+        if len(group) > 0:
+            raise serializers.ValidationError(
+                "group with the same name already exists")
+        return instance
 
+    def validate_permissions(self, instance):
+        for permission in instance:
+            instance_permission = Permission.objects.filter(id=permission)
+            if len(instance_permission) != 1:
+                raise serializers.ValidationError("Not a valid permission")
+        return instance
 
-class UserEmploymentJobStatusSerializer(serializers.ModelSerializer):
+    @transaction.atomic
+    def create(self, validated_data):
+        obj = Group.objects.create(name=validated_data['name'])
+        obj.permissions.set(validated_data['permissions'])
+        obj.save()
+        system = System.objects.get(
+            system_id=validated_data['system_id'])
+        SystemGroup.objects.create(group=obj, system=system)
+        return validated_data
 
-    class Meta:
-        model = UserEmploymentJobStatus
-        fields = "__all__"
-        read_only_fields = ('id', 'created_at')
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        systemgroup_obj = (SystemGroup.objects.get(group=instance.id))
+        if systemgroup_obj.system.system_id != validated_data['system_id']:
+            systemgroup_obj.system = System.objects.get(
+                system_id=validated_data['system_id'])
+            systemgroup_obj.save()
 
-
-class UserEmploymentJobStatusAllFSerializer(serializers.ModelSerializer):
-    user = BaseUserSerializer()
-    employment = EmploymentStatusSerializer()
-    job = JobsSerializer()
-
-    class Meta:
-        model = UserEmploymentJobStatus
-        fields = "__all__"
-        read_only_fields = ('id', 'created_at')
+        group_to_save = BaseGroupSerializer(
+            instance=instance, data={"name": validated_data['name'],
+                                     "permissions": validated_data['permissions']
+                                     })
+        if group_to_save.is_valid():
+            group_to_save.save()
+        return validated_data

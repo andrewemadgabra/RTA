@@ -10,7 +10,7 @@ CREATE TABLE Auth_Permission (
 [content_type_id] INT NOT NULL FOREIGN KEY REFERENCES Django_Content_Type([id]) ON DELETE CASCADE
 ON UPDATE CASCADE, 
 [codename] NVARCHAR(100) NOT NULL, 
-[name] NVARCHAR(255) NOT NULL
+[name] NVARCHAR(255) NOT NULL UNIQUE
 )
 
 
@@ -24,7 +24,7 @@ CREATE TABLE Django_Migrations (
 
 CREATE TABLE Auth_Group (
 [id] INT PRIMARY KEY IDENTITY(1,1), 
-[name] NVARCHAR(255) NOT NULL , 
+[name] NVARCHAR(255) NOT NULL  UNIQUE, 
 )
 
 
