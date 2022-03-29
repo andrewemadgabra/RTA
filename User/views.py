@@ -39,10 +39,10 @@ class SystemGroupView(CRUView):
 
     def get(self, request, pk=None, data=None):
         g_model = self.get_model_get
-        data = g_model.objects.all().prefetch_related(
-            "system", "group", "group__permissions")
+        data, many = self.get_modeled_data(request, pk=pk, model=g_model, field_name=None, field_value=None,
+                                           fields_names=[], fields_values=[], debug=False, related_models=[], many_to_many_related_models=["system", "group", "group__permissions"])
 
-        return super(SystemGroupView, self).get(request=request, pk=pk, data=data)
+        return super(SystemGroupView, self).get(request=request, pk=pk, data=data, many=many)
 
 
 class SystemView(CRUDView):

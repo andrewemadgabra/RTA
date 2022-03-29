@@ -1,3 +1,4 @@
+from ast import Tuple
 from rest_framework.response import Response
 from rest_framework import status as return_status
 from HelperClasses.GenericViewsFolder.BaseView import BaseView
@@ -30,22 +31,48 @@ class GetView(BaseView):
         else:
             return self.get_serializer
 
+    def get_appropriate_filtered_data(self, model, params={}, related_models=[],
+                                      many_to_many_related_models=[], prefetch_related_flag=False, select_related_flag=False, all=False):
+        if prefetch_related_flag:
+            if all:
+                data = model.objects.all().prefetch_related(*many_to_many_related_models)
+            else:
+                data = model.objects.filter(
+                    **params).prefetch_related(*many_to_many_related_models)
+        elif select_related_flag:
+            if all:
+                data = model.objects.all().select_related(*related_models)
+            else:
+                data = model.objects.filter(
+                    **params).prefetch_related(*related_models)
+        else:
+            if all:
+                data = model.objects.all()
+            else:
+                data = model.objects.filter(**params)
+
+        return data
+
     def get_modeled_data(self, request, pk=None, model=None, field_name=None, field_value=None,
-                         fields_names=[], fields_values=[], debug=False):
+                         fields_names=[], fields_values=[], debug=False, related_models=[], many_to_many_related_models=[]):
         """
         This function is responseble for getting data from the model itself
         """
         many = True
+        select_related_flag = True if len(related_models) > 0 else False
+        prefetch_related_flag = True if len(
+            many_to_many_related_models) > 0 else False
+
         if model is None:
             model = self.get_model_get
-        field_name = field_name if field_name is not None else request.GET.get(
+        field_name = field_name if field_name else request.GET.get(
             "field_name")
-        field_value = field_value if field_value is not None else request.GET.get(
+        field_value = field_value if field_value else request.GET.get(
             "field_value")
 
-        fields_names = fields_names if fields_names is not None else request.GET.get(
+        fields_names = fields_names if fields_names else request.GET.get(
             "fields_names")
-        fields_values = fields_values if fields_values is not None else request.GET.get(
+        fields_values = fields_values if fields_values else request.GET.get(
             "fields_values")
 
         if pk is not None:
@@ -70,9 +97,14 @@ class GetView(BaseView):
                     raise ValueError(
                         "model doesn't have the field specified in field_name")
 
-                data = model.objects.filter(**params)
+                data = self.get_appropriate_filtered_data(model=model, params=params, related_models=related_models,
+                                                          many_to_many_related_models=many_to_many_related_models,
+                                                          prefetch_related_flag=select_related_flag,
+                                                          select_related_flag=prefetch_related_flag, all=False)
 
             elif len(fields_names) > 0:
+                fields_names = fields_names.split(',')
+                fields_values = fields_values.split(',')
                 assert(len(fields_names) == len(fields_values)
                        ), "fields_names is not same length with fields_values"
                 params = {}
@@ -85,10 +117,16 @@ class GetView(BaseView):
                     raise ValueError(
                         "model doesn't have the field {}".format(f_name))
 
-                data = model.objects.filter(**params)
+                data = self.get_appropriate_filtered_data(model=model, params=params, related_models=related_models,
+                                                          many_to_many_related_models=many_to_many_related_models,
+                                                          prefetch_related_flag=select_related_flag,
+                                                          select_related_flag=prefetch_related_flag, all=False)
 
             else:
-                data = model.objects.all()
+                data = self.get_appropriate_filtered_data(model=model, params={}, related_models=related_models,
+                                                          many_to_many_related_models=many_to_many_related_models,
+                                                          prefetch_related_flag=select_related_flag,
+                                                          select_related_flag=prefetch_related_flag, all=True)
         return data, many
 
     def get_serialized_data(self, request, model=None, data=None, pk=None, field_name=None, field_value=None,
