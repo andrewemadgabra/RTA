@@ -30,27 +30,27 @@ CREATE TABLE SubActors(
 )
 
 CREATE TABLE DeliveryMethod(
-	delivery_method_id INT IDENTITY(1, 1) PRIMARY KEY, 
-	delivery_Method_name_ar NVARCHAR(128) NOT NULL UNIQUE, 
-	delivery_Method_name_en NVARCHAR(128) NOT NULL UNIQUE, 
+	[delivery_method_id] INT IDENTITY(1, 1) PRIMARY KEY, 
+	[delivery_method_name_ar] NVARCHAR(128) NOT NULL UNIQUE, 
+	[delivery_method_name_en] NVARCHAR(128) NOT NULL UNIQUE, 
 	[created_at] DATETIME NOT NULL, 
 	[modified_at] DATETIME NULL
 )
 
 
 CREATE TABLE AttachmentType(
-	attachment_type_id INT IDENTITY(1, 1) PRIMARY KEY, 
-	attachment_type_ar NVARCHAR(128) NOT NULL UNIQUE, 
-	attachment_type_en NVARCHAR(128) NOT NULL UNIQUE, 
+	[attachment_type_id] INT IDENTITY(1, 1) PRIMARY KEY, 
+	[attachment_type_ar] NVARCHAR(128) NOT NULL UNIQUE, 
+	[attachment_type_en] NVARCHAR(128) NOT NULL UNIQUE, 
 	[created_at] DATETIME NOT NULL, 
 	[modified_at] DATETIME NULL
 )
 
 
 CREATE TABLE PriorityLevel(
-	priority_level_id INT IDENTITY(1, 1) PRIMARY KEY,
-	priority_level_ar NVARCHAR(128) NOT NULL UNIQUE, 
-	priority_level_en NVARCHAR(128) NOT NULL UNIQUE,
+	[priority_level_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[priority_level_ar] NVARCHAR(128) NOT NULL UNIQUE, 
+	[priority_level_en] NVARCHAR(128) NOT NULL UNIQUE,
 	[created_at] DATETIME NOT NULL, 
 	[modified_at] DATETIME NULL
 )
