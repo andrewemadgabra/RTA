@@ -37,7 +37,7 @@ class SystemGroupView(CRUView):
     base_serializer = SystemGroupSerializer
     get_serializer = SystemGroupGETSerializer
 
-    def get(self, request, pk=None data=None):
+    def get(self, request, pk=None, data=None):
         g_model = self.get_model_get
         data = g_model.objects.all().prefetch_related(
             "system", "group", "group__permissions")
