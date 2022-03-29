@@ -1,3 +1,4 @@
+from django import db
 from django.db import models, transaction
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager, UserManager, Group, Permission
@@ -10,6 +11,7 @@ from HelperClasses.DjangoValidator import DjangoValidator
 from RTA import settings
 from EmploymentStatus.models import EmploymentStatus
 from Jobs.models import Jobs
+from Actors.models import SubActors
 
 # Create your models here.
 
@@ -142,6 +144,8 @@ class UserEmploymentJobStatus(AbstractDateModels):
     employment = models.ForeignKey(
         EmploymentStatus, models.CASCADE, db_column="employment_id")
     job = models.ForeignKey(Jobs, models.CASCADE, db_column="job_id")
+    sub_actor = models.ForeignKey(
+        SubActors, models.CASCADE, db_column="sub_actor_id")
     action_user = models.ForeignKey(
         User, models.CASCADE, related_name="creator_user_emp", db_column="action_user")
 
