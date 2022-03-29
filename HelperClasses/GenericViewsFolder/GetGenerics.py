@@ -102,7 +102,7 @@ class GetView(BaseView):
                                                           prefetch_related_flag=select_related_flag,
                                                           select_related_flag=prefetch_related_flag, all=False)
 
-            elif len(fields_names) > 0:
+            elif fields_names:
                 fields_names = fields_names.split(',')
                 fields_values = fields_values.split(',')
                 assert(len(fields_names) == len(fields_values)
