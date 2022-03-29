@@ -35,3 +35,21 @@ class DjangoValidator:
                 _("%(value)s is not a valid Egyption Mobile Number"),
                 params={'value': value},
             )
+
+    def validation_ArabicLettersOrNumbers(self, value):
+        regex_arabic_letters_or_numbers = re.compile(
+            '^[\u0621-\u064A\u0660-\u0669]+$')
+        if not(re.match(regex_arabic_letters_or_numbers, value)):
+            raise ValidationError(
+                _("%(value)s doesn't match araibc letters or numbers"),
+                params={'value': value},
+            )
+
+    def validation_EnglishLetters(self, value):
+        regex_english_letters = re.compile(
+            '^[a-zA-Z]+$')
+        if not(re.match(regex_english_letters, value)):
+            raise ValidationError(
+                _("%(value)s doesn't match araibc letters or numbers"),
+                params={'value': value},
+            )

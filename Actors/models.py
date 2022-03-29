@@ -1,13 +1,16 @@
 from HelperClasses.AbstractDateModels import AbstractDateModels
 from django.db import models
+from HelperClasses.DjangoValidator import DjangoValidator
 
 # Create your models here.
 
 
 class EntityCassification(AbstractDateModels):
     entity_id = models.AutoField(primary_key=True)
-    entity_Ar = models.CharField(max_length=128, unique=True)
-    entity_En = models.CharField(max_length=128, unique=True)
+    entity_Ar = models.CharField(max_length=128, unique=True,  validators=[
+        DjangoValidator().validation_ArabicLettersOrNumbers])
+    entity_En = models.CharField(max_length=128, unique=True, validators=[
+        DjangoValidator().validation_EnglishLetters])
 
     class Meta:
         managed = False
@@ -24,8 +27,10 @@ class MainActors(AbstractDateModels):
     main_actor_id = models.AutoField(primary_key=True)
     entitycassification = models.ForeignKey(
         EntityCassification, models.CASCADE)
-    main_actor_Ar = models.CharField(max_length=128, unique=True)
-    main_actor_En = models.CharField(max_length=128, unique=True)
+    main_actor_Ar = models.CharField(max_length=128, unique=True,  validators=[
+        DjangoValidator().validation_ArabicLettersOrNumbers])
+    main_actor_En = models.CharField(max_length=128, unique=True, validators=[
+        DjangoValidator().validation_EnglishLetters])
 
     class Meta:
         managed = False
@@ -42,8 +47,10 @@ class SubActors(AbstractDateModels):
     sub_actor_id = models.AutoField(primary_key=True)
     main_actor = models.ForeignKey(
         MainActors, models.CASCADE)
-    sub_actor_Ar = models.CharField(max_length=128, unique=True)
-    sub_actor_En = models.CharField(max_length=128, unique=True)
+    sub_actor_Ar = models.CharField(max_length=128, unique=True, validators=[
+                                    DjangoValidator().validation_ArabicLettersOrNumbers])
+    sub_actor_En = models.CharField(max_length=128, unique=True, validators=[
+                                    DjangoValidator().validation_EnglishLetters])
     sub_actor_key = models.CharField(max_length=128)
 
     class Meta:
