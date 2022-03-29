@@ -78,6 +78,7 @@ class SystemGroupSerializer(serializers.ModelSerializer):
 
 class SystemGroupGETSerializer(serializers.ModelSerializer):
     system = SystemSerializer()
+    group = BaseGroupPermissionSerializer()
 
     class Meta:
         model = SystemGroup
