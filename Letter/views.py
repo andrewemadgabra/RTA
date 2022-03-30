@@ -34,7 +34,7 @@ class LetterDataView(CRUDView):
                 letter_title) < 256), "no a valid letter_title"
             assert(len(attachment_types) == len(files))
         except Exception as e:
-            return Response({"error": [e.__str__()]})
+            return Response({"error": [e.__str__()]}, status=return_status.HTTP_400_BAD_REQUEST)
 
         p_model = self.model
         saved_object = p_model.objects.create(
