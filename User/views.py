@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from HelperClasses.GenericView import CRUDView, CRUView
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
-from User.serializers import (BaseUserSerializer, BaseGroupSerializer, BaseGroupPermissionSerializer,
+from User.serializers import (BaseUserSerializer, BaseUserGETSerializer, BaseGroupSerializer, BaseGroupPermissionSerializer,
                               BasePermissionSerializer, SystemSerializer, SystemGroupGETSerializer,
                               UserEmploymentJobStatusSerializer, SystemGroupSerializer)
 from django.contrib.auth.models import (Group, Permission)
@@ -19,6 +19,7 @@ from django.contrib.auth.models import (Group, Permission)
 class UserView(CRUDView):
     base_model = User
     base_serializer = BaseUserSerializer
+    get_serializer = BaseUserGETSerializer
 
 
 class UserEmploymentJobStatus(CRUView):

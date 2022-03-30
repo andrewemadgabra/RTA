@@ -40,20 +40,20 @@ class AttachmentType(AbstractDateModels):
     def __repr__(self):
         return self.attachment_type_en
 
-# class LetterAttachments(AbstractDateModels):
-#     letter_attachment_id = models.AutoField(primary_key=True)
-#     lewtter_data_id = models.ForeignKey(LetterData, models.CASCADE)
-#     letter_attach = models.CharField(max_length=128, unique=True, validators=[
-#         DjangoValidator().validation_ArabicLettersOrNumbers])
-#     attachment_type_en = models.CharField(max_length=128, unique=True, validators=[
-#         DjangoValidator().validation_EnglishLetters])
 
-#     class Meta:
-#         managed = False
-#         db_table = 'AttachmentType'
+class LetterAttachments(AbstractDateModels):
+    letter_attachment_id = models.AutoField(primary_key=True)
+    letter_data_id = models.ForeignKey(LetterData, models.CASCADE)
+    letter_attach_name = models.CharField(max_length=128)
+    file_path_on_server = models.CharField(max_length=512, unique=True)
+    attachment_type_id = models.ForeignKey(AttachmentType, models.CASCADE)
 
-#     def __str__(self):
-#         return self.attachment_type_en
+    class Meta:
+        managed = False
+        db_table = 'LetterAttachemnets'
 
-#     def __repr__(self):
-#         return self.attachment_type_en
+    def __str__(self):
+        return self.letter_attach_name
+
+    def __repr__(self):
+        return self.letter_attach_name

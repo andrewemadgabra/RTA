@@ -22,6 +22,13 @@ class BaseGroupSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
+class BaseGroupNameONlySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ('id', 'name')
+        read_only_fields = ('id',)
+
+
 class BaseGroupPermissionSerializer(serializers.ModelSerializer):
     permissions = BasePermissionSerializer(many=True)
 
@@ -60,6 +67,20 @@ class BaseUserSerializer(serializers.ModelSerializer):
         super().update(instance, validated_data)
         instance.update_user_permissions()
         return instance
+
+
+class BaseUserGETSerializer(serializers.ModelSerializer):
+    groups = BaseGroupNameONlySerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = "__all__"
+        read_only_fields = ('id',)
+        extra_kwargs = {'password': {'write_only': True},
+                        'user_permissions': {'write_only':  True}}
+
+    def create(self, validated_data):
+        raise ValueError("NOT a vaild Creation Serlizer")
 
 
 class SystemSerializer(serializers.ModelSerializer):
