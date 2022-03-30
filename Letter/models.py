@@ -30,6 +30,10 @@ class AttachmentType(AbstractDateModels):
     attachment_type_en = models.CharField(max_length=128, unique=True, validators=[
         DjangoValidator().validation_EnglishLetters])
 
+    content_type = models.CharField(max_length=128)
+    charset = models.CharField(max_length=128, null=True, blank=True)
+    max_size = models.PositiveIntegerField(null=True, blank=True)
+
     class Meta:
         managed = False
         db_table = 'AttachmentType'

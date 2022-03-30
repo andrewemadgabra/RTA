@@ -93,3 +93,17 @@ CREATE TABLE AttachmentType
 )
 
 
+ALTER TABLE AttachmentType
+ADD [content_type] NVARCHAR(128) NOT NULL
+
+ALTER TABLE AttachmentType
+ADD [charset] NVARCHAR(128) NULL
+
+
+
+ALTER TABLE AttachmentType
+ADD [max_size] INT NULL
+
+
+ALTER TABLE AttachmentType
+ADD CONSTRAINT CHK_max_size_check  CHECK([max_size] > 0) 

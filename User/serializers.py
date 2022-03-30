@@ -2,6 +2,9 @@ from rest_framework import serializers
 from User.models import User, System, SystemGroup, UserEmploymentJobStatus
 from django.contrib.auth.models import (Group, Permission)
 from django.db import transaction
+from Jobs.serializers import JobsSerializer
+from EmploymentStatus.serializers import EmploymentStatusSerializer
+from Actors.serializers import SubActorsSerializer
 
 
 class BasePermissionSerializer(serializers.ModelSerializer):
@@ -118,3 +121,18 @@ class UserEmploymentJobStatusSerializer(serializers.ModelSerializer):
         user.is_active = True
         user.save()
         return super(UserEmploymentJobStatusSerializer, self).create(validated_data)
+
+
+class UserEmploymentJobStatusGETSerializer(serializers.ModelSerializer):
+    user = BaseUserGETSerializer()
+    employment = EmploymentStatusSerializer()
+    job = JobsSerializer()
+    sub_actor = SubActorsSerializer()
+
+    class Meta:
+        model = UserEmploymentJobStatus
+        fields = "__all__"
+        read_only_fields = ('id', 'created_at')
+
+    def create(self, validated_data):
+        raise ValueError("Method not allowed")

@@ -9,7 +9,7 @@ from HelperClasses.GenericView import CRUDView, CRUView
 from User.models import User, System, SystemGroup,  UserEmploymentJobStatus
 from User.serializers import (BaseUserSerializer, BaseUserGETSerializer, BaseGroupSerializer,
                               BaseGroupPermissionSerializer, BasePermissionSerializer,
-                              SystemSerializer, SystemGroupGETSerializer,
+                              SystemSerializer, SystemGroupGETSerializer, UserEmploymentJobStatusGETSerializer,
                               UserEmploymentJobStatusSerializer, SystemGroupSerializer)
 from django.contrib.auth.models import (Group, Permission)
 
@@ -26,6 +26,7 @@ class UserView(CRUDView):
 class UserEmploymentJobStatus(CRUView):
     base_model = UserEmploymentJobStatus
     base_serializer = UserEmploymentJobStatusSerializer
+    get_serializer = UserEmploymentJobStatusGETSerializer
 
 
 class GroupView(CRUDView):

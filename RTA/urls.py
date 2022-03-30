@@ -23,4 +23,5 @@ urlpatterns = [
     path('actors/', include("Actors.urls")),
     path('periority/', include("Periority.urls")),
     path('letter/', include("Letter.urls")),
+
 ]
