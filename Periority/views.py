@@ -1,5 +1,5 @@
 from Periority.models import DeliveryMethod, AttachmentType, PriorityLevel
-from Periority.serializers import (DeliveryMethodSerializer, AttachmentTypeSerializer,
+from Periority.serializers import (DeliveryMethodSerializer,
                                    PriorityLevelSerializer)
 from HelperClasses.GenericView import CRUDView
 
@@ -9,11 +9,6 @@ from HelperClasses.GenericView import CRUDView
 class DeliveryMethodView(CRUDView):
     base_model = DeliveryMethod
     base_serializer = DeliveryMethodSerializer
-
-
-class AttachmentTypeView(CRUDView):
-    base_model = AttachmentType
-    base_serializer = AttachmentTypeSerializer
 
 
 class PriorityLevelView(CRUDView):

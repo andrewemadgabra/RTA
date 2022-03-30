@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'EmploymentStatus',
     'Actors',
     'Periority',
+    'Letter',
 
 ]
 
