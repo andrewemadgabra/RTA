@@ -2,6 +2,8 @@ from django.db import models
 from HelperClasses.AbstractDateModels import AbstractDateModels
 from User.models import User
 from HelperClasses.DjangoValidator import DjangoValidator
+from django.conf import settings
+import os
 # Create your models here.
 
 
@@ -47,10 +49,11 @@ class AttachmentType(AbstractDateModels):
 
 class LetterAttachments(AbstractDateModels):
     letter_attachment_id = models.AutoField(primary_key=True)
-    letter_data_id = models.ForeignKey(LetterData, models.CASCADE)
+    letter_data = models.ForeignKey(LetterData, models.CASCADE)
     letter_attach_name = models.CharField(max_length=128)
-    file_path_on_server = models.CharField(max_length=512, unique=True)
-    attachment_type_id = models.ForeignKey(AttachmentType, models.CASCADE)
+    file_path_on_server = models.FilePathField(path=os.path.join(
+        settings.BASE_DIR, settings.JSON_CONFIGRATION['STATIC_DIR']))
+    attachment_type = models.ForeignKey(AttachmentType, models.CASCADE)
 
     class Meta:
         managed = False

@@ -106,4 +106,16 @@ ADD [max_size] INT NULL
 
 
 ALTER TABLE AttachmentType
-ADD CONSTRAINT CHK_max_size_check  CHECK([max_size] > 0) 
+ADD CONSTRAINT CHK_max_size_check  CHECK([max_size] > 0)
+
+
+CREATE TABLE LetterAttachemnets
+(
+	[letter_attachment_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[letter_attach_name] NVARCHAR(256) NOT NULL ,
+	[file_path_on_server] NVARCHAR(512) NOT NULL ,
+	[letter_data_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[LetterData]([letter_data_id]) ON DELETE CASCADE,
+	[attachment_type_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[AttachmentType]([attachment_type_id]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
