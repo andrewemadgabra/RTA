@@ -46,7 +46,7 @@ class LetterDataView(CRUDView):
             _, file_path = File.upload_file(
                 file_name=file_name, extention=extention, file=file_file, base_dir=base_dir)
             LetterAttachments.objects.create(letter_data_id=saved_object.letter_data_id, letter_attach_name=file_name,
-                                             file_path_on_server=file_path, attachment_type_id=AttachmentType.objects.get(pk=extention))
+                                             file_path_on_server=file_path, attachment_type_id=AttachmentType.objects.get(content_type=extention))
 
         object_after__insert = p_model.objects.get(
             letter_data_id=saved_object.letter_data_id)
