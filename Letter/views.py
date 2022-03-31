@@ -31,7 +31,7 @@ class LetterDataView(CRUDView):
                                            }
                                      )
         if not(letter_object.is_valid()):
-            return Response(letter_object.error, status=return_status.HTTP_400_BAD_REQUEST)
+            return Response(letter_object.errors, status=return_status.HTTP_400_BAD_REQUEST)
         p_model = self.model
         saved_object = p_model.objects.create(
             issued_number=letter_object["issued_number"], letter_title=letter_object["letter_title"], action_user=letter_object["action_user"])
