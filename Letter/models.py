@@ -51,8 +51,7 @@ class LetterAttachments(AbstractDateModels):
     letter_attachment_id = models.AutoField(primary_key=True)
     letter_data = models.ForeignKey(LetterData, models.CASCADE)
     letter_attach_name = models.CharField(max_length=128)
-    file_path_on_server = models.FilePathField(path=os.path.join(
-        settings.BASE_DIR, settings.JSON_CONFIGRATION['STATIC_DIR']))
+    file_path_on_server = models.CharField(max_length=128)
     attachment_type = models.ForeignKey(AttachmentType, models.CASCADE)
 
     class Meta:

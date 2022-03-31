@@ -12,6 +12,7 @@ from User.serializers import (BaseUserSerializer, BaseUserGETSerializer, BaseGro
                               SystemSerializer, SystemGroupGETSerializer, UserEmploymentJobStatusGETSerializer,
                               UserEmploymentJobStatusSerializer, SystemGroupSerializer)
 from django.contrib.auth.models import (Group, Permission)
+from django.contrib.auth import login
 
 
 # Create your views here.
@@ -73,6 +74,9 @@ class PermissionView(CRUDView):
 
 
 class Login(KnoxLoginView):
+    serializer_class = BaseUserSerializer
+    permission_classes = ()  # empty tuple
+
     def _get_user_model(self):
         return get_user_model()
 
@@ -90,6 +94,7 @@ class Login(KnoxLoginView):
             if len(old_token) > 0:
                 return Response({"error": ["already loged In"]}, status=status.HTTP_400_BAD_REQUEST)
             self._delete_user_tokens(user)
+            login(request, authontication_serializer.validated_data['user'])
             new_token = super(Login, self).post(request, format=None).data
             return Response(new_token, status=status.HTTP_200_OK)
         return Response(authontication_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

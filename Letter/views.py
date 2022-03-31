@@ -18,12 +18,6 @@ class LetterDataView(CRUDView):
     post_model = LetterAttachments
     post_serializer = LetterAttachmentsSerializer
 
-    def get_attachment_id(self, extention):
-        try:
-            return AttachmentType.objects.get(content_type=extention)
-        except AttachmentType.DoesNotExist:
-            return None
-
     def letter_data_handler(self, data):
         b_serializer = self.serializer
         letter_object = b_serializer(data={"issued_number":  data.get('issued_number'),
@@ -34,7 +28,7 @@ class LetterDataView(CRUDView):
 
         if letter_object.is_valid():
             return letter_object.data, True
-        return letter_object.erros, False
+        return letter_object.errors, False
 
     def attachment_data_handler(self, files, letter_data):
         return_attachment_to_upload = []
@@ -47,31 +41,30 @@ class LetterDataView(CRUDView):
                 {
                     "file_name": new_file_name,
                     "extention":  extention,
-                    "file_file": files[file_name],
+                    "file": files[file_name],
                     "base_dir": os.path.join(BASE_DIR, JSON_CONFIGRATION['STATIC_DIR'])
                 }
             )
-
+            att = AttachmentType.objects.get(content_type=extention)
             return_attachment_to_save.append(
                 {
-                    "letter_data_id": letter_data.letter_data_id,
+                    "letter_data": letter_data['letter_data_id'],
                     "letter_attach_name": file_name,
                     "file_path_on_server": new_file_name,
-                    "attachment_type": AttachmentType.objects.get(content_type=extention)
+                    "attachment_type": att.attachment_type_id,
+                    "attachment_type_obj": att
                 }
             )
 
-            # LetterAttachments.objects.create(letter_data_id=,=,
-            #                                  =, attachment_type_id=AttachmentType.objects.get(content_type=extention).pk)
-
         return return_attachment_to_upload, return_attachment_to_save
 
-    def save_attachment_to_upload(self, attachments):
+    def save_attachment_to_upload(self, attachments, letter_data):
         valid_attachment = LetterAttachmentsSerializer(
             data=attachments, many=True)
         if valid_attachment.is_valid():
             for attachment in attachments:
-                LetterAttachments.objects.create(**attachment)
+                LetterAttachments.objects.create(**{"letter_data": letter_data, "letter_attach_name": attachment.get(
+                    'letter_attach_name'), "file_path_on_server": attachment.get('file_path_on_server'), "attachment_type": attachment.get('attachment_type_obj')})
             return valid_attachment.data, True
         return valid_attachment.errors, False
 
@@ -87,16 +80,17 @@ class LetterDataView(CRUDView):
 
         letter_data, status = self.letter_data_handler(data)
         if status:
-            letter_data_saved = LetterData.objects.create(**letter_data)
-            letter_data = LetterDataSerializer(data=letter_data_saved)
+            letter_data_saved = LetterData.objects.create(**{"issued_number": letter_data.get(
+                "issued_number"), "letter_title":  letter_data.get("letter_title"), "action_user": User.objects.get(pk=1)})
+            letter_data = LetterDataSerializer(letter_data_saved).data
 
-        return_attachment_to_upload, return_attachment_to_save = self.attachment_data_handler(
-            files, letter_data)
+            return_attachment_to_upload, return_attachment_to_save = self.attachment_data_handler(
+                files, letter_data)
 
-        attatchments, a_status = self.save_attachment_to_upload(
-            return_attachment_to_save)
+            attatchments, a_status = self.save_attachment_to_upload(
+                return_attachment_to_save, letter_data=letter_data_saved)
 
-        self.upload_attachment_to_save(return_attachment_to_upload)
+            self.upload_attachment_to_save(return_attachment_to_upload)
 
         return Response({"data": letter_data, "attachment": attatchments}, status=return_status.HTTP_201_CREATED)
 
