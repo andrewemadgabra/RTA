@@ -1,8 +1,8 @@
-from ast import Tuple
 from rest_framework.response import Response
 from rest_framework import status as return_status
 from HelperClasses.GenericViewsFolder.BaseView import BaseView
 from django.core.exceptions import FieldDoesNotExist
+import json
 
 
 class GetView(BaseView):
@@ -92,7 +92,7 @@ class GetView(BaseView):
                 params = {}
                 try:
                     params[model._meta.get_field(
-                        field_name).name] = field_value
+                        field_name).name] = json.loads(field_value)
                 except FieldDoesNotExist:
                     raise ValueError(
                         "model doesn't have the field specified in field_name")
@@ -112,7 +112,7 @@ class GetView(BaseView):
                 try:
                     for index, f_name in enumerate(fields_names):
                         params[model._meta.get_field(
-                            f_name).name] = fields_values[index]
+                            f_name).name] = json.loads(fields_values[index])
                 except FieldDoesNotExist:
                     raise ValueError(
                         "model doesn't have the field {}".format(f_name))
@@ -138,7 +138,7 @@ class GetView(BaseView):
         """
         if model is None:
             model = self.get_model_get
-        if not(data):
+        if data is None:
             data, many = self.get_modeled_data(
                 request=request, pk=pk, model=model, field_name=field_name, field_value=field_value,
                 fields_names=fields_names, fields_values=fields_values, debug=debug)

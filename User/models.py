@@ -12,6 +12,7 @@ from RTA import settings
 from EmploymentStatus.models import EmploymentStatus
 from Jobs.models import Jobs
 from Actors.models import SubActors
+from django_mysql.models import Bit1BooleanField, NullBit1BooleanField
 
 # Create your models here.
 
@@ -26,10 +27,10 @@ class User(AbstractBaseUser, PermissionsMixin, AbstractDateModels):
 
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(null=True, blank=True)
-    is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
+    is_superuser = Bit1BooleanField(default=False)
+    is_active = Bit1BooleanField(default=False)
+    is_staff = Bit1BooleanField(default=False)
+    is_admin = Bit1BooleanField(default=False)
     username = models.CharField(unique=True, max_length=30)
     email = models.EmailField(max_length=128, unique=True)
     first_name = models.CharField(max_length=30)
