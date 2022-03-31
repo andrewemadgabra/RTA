@@ -27,12 +27,12 @@ class LetterData(AbstractDateModels):
 
 class AttachmentType(AbstractDateModels):
     attachment_type_id = models.AutoField(primary_key=True)
-    attachment_type_ar = models.CharField(max_length=128, unique=True, validators=[
+    attachment_type_ar = models.CharField(max_length=128, validators=[
         DjangoValidator().validation_ArabicLettersOrNumbers])
-    attachment_type_en = models.CharField(max_length=128, unique=True, validators=[
+    attachment_type_en = models.CharField(max_length=128, validators=[
         DjangoValidator().validation_EnglishLetters])
 
-    content_type = models.CharField(max_length=128)
+    content_type = models.CharField(max_length=128, unique=True)
     charset = models.CharField(max_length=128, null=True, blank=True)
     max_size = models.PositiveIntegerField(null=True, blank=True)
 

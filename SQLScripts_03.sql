@@ -86,28 +86,15 @@ CREATE TABLE LetterDataLogger
 CREATE TABLE AttachmentType
 (
 	[attachment_type_id] INT IDENTITY(1, 1) PRIMARY KEY,
-	[attachment_type_ar] NVARCHAR(128) NOT NULL UNIQUE,
-	[attachment_type_en] NVARCHAR(128) NOT NULL UNIQUE,
+	[attachment_type_ar] NVARCHAR(128) NOT NULL ,
+	[attachment_type_en] NVARCHAR(128) NOT NULL ,
+	[content_type] NVARCHAR(128) NOT NULL UNIQUE,
+	[charset] NVARCHAR(128) NULL,
+	[max_size] INT NULL,
 	[created_at] DATETIME NOT NULL,
-	[modified_at] DATETIME NULL
+	[modified_at] DATETIME NULL,
+	CHECK([max_size] > 0)
 )
-
-
-ALTER TABLE AttachmentType
-ADD [content_type] NVARCHAR(128) NOT NULL
-
-ALTER TABLE AttachmentType
-ADD [charset] NVARCHAR(128) NULL
-
-
-
-ALTER TABLE AttachmentType
-ADD [max_size] INT NULL
-
-
-ALTER TABLE AttachmentType
-ADD CONSTRAINT CHK_max_size_check  CHECK([max_size] > 0)
-
 
 CREATE TABLE LetterAttachemnets
 (

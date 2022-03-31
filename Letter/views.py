@@ -23,22 +23,19 @@ class LetterDataView(CRUDView):
         self.view_validator(request)
         files = request.FILES
         data = request.data
-        try:
-            issued_number = data["issued_number"]
-            letter_title = data["letter_title"]
-            attachment_types = eval(data["attachment_type"])
-            action_user = User.objects.get(pk=1)
 
-            assert(int(issued_number) > 0), "not a valid issued_number"
-            assert(type(letter_title) == str and len(
-                letter_title) < 256), "no a valid letter_title"
-            assert(len(attachment_types) == len(files))
-        except Exception as e:
-            return Response({"error": [e.__str__()]}, status=return_status.HTTP_400_BAD_REQUEST)
-
+        b_serializer = self.serializer
+        letter_object = b_serializer(
+            {"issued_number":  data.get('issued_number'),
+             "letter_title":  data.get('letter_title'),
+             "action_user":  1
+             }
+        )
+        if not(letter_object.is_valid()):
+            return Response(letter_object.error, status=return_status.HTTP_400_BAD_REQUEST)
         p_model = self.model
         saved_object = p_model.objects.create(
-            issued_number=issued_number, letter_title=letter_title, action_user=action_user)
+            issued_number=letter_object["issued_number"], letter_title=letter_object["letter_title"], action_user=letter_object["action_user"])
 
         for index, value in enumerate(files.items()):
             file_name, file_value = value
@@ -49,7 +46,7 @@ class LetterDataView(CRUDView):
             _, file_path = File.upload_file(
                 file_name=file_name, extention=extention, file=file_file, base_dir=base_dir)
             LetterAttachments.objects.create(letter_data_id=saved_object.letter_data_id, letter_attach_name=file_name,
-                                             file_path_on_server=file_path, attachment_type_id=attachment_types[index])
+                                             file_path_on_server=file_path, attachment_type_id=AttachmentType.objects.get(pk=extention))
 
         object_after__insert = p_model.objects.get(
             letter_data_id=saved_object.letter_data_id)
