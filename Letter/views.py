@@ -25,20 +25,18 @@ class LetterDataView(CRUDView):
         data = request.data
 
         b_serializer = self.serializer
-        letter_object = b_serializer(
-            {"issued_number":  data.get('issued_number'),
-             "letter_title":  data.get('letter_title'),
-             "action_user":  1
-             }
-        )
+        letter_object = b_serializer(data={"issued_number":  data.get('issued_number'),
+                                           "letter_title":  data.get('letter_title'),
+                                           "action_user":  1
+                                           }
+                                     )
         if not(letter_object.is_valid()):
             return Response(letter_object.error, status=return_status.HTTP_400_BAD_REQUEST)
         p_model = self.model
         saved_object = p_model.objects.create(
             issued_number=letter_object["issued_number"], letter_title=letter_object["letter_title"], action_user=letter_object["action_user"])
 
-        for index, value in enumerate(files.items()):
-            file_name, file_value = value
+        for file_name, file_value in files.items():
             file_name = file_name
             extention = file_value._name.split('.')[-1]
             file_file = files[file_name]
