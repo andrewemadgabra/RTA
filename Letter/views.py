@@ -42,7 +42,7 @@ class LetterDataView(CRUDView):
         pk_of_attachment_type = {}
         for file_name, file_value in files.items():
             new_file_name, extention = File.get_new_file_name_with_extenstion(
-                file_value._name)
+                file_value.name)
             return_attachment_to_upload.append(
                 {
                     "file_name": new_file_name,
@@ -51,45 +51,54 @@ class LetterDataView(CRUDView):
                     "base_dir": os.path.join(BASE_DIR, JSON_CONFIGRATION['STATIC_DIR'])
                 }
             )
-            selized_attachment = AttachmentTypeSerializer(
-                self.get_attachment_id(extention))
 
             return_attachment_to_save.append(
                 {
                     "letter_data_id": letter_data.letter_data_id,
                     "letter_attach_name": file_name,
                     "file_path_on_server": new_file_name,
-                    "attachment_type": pk_of_attachment_type.get(extention)
+                    "attachment_type": AttachmentType.objects.get(content_type=extention)
                 }
             )
 
             # LetterAttachments.objects.create(letter_data_id=,=,
             #                                  =, attachment_type_id=AttachmentType.objects.get(content_type=extention).pk)
 
-        return [], []
+        return return_attachment_to_upload, return_attachment_to_save
 
-    # @transaction.atomic
-    # def post(self, request, modeled_response=False, debug=False, **kwargs):
-    #     self.view_validator(request)
-    #     files = request.FILES
-    #     data = request.data
+    def save_attachment_to_upload(self, attachments):
+        valid_attachment = LetterAttachmentsSerializer(
+            data=attachments, many=True)
+        if valid_attachment.is_valid():
+            for attachment in attachments:
+                LetterAttachments.objects.create(**attachment)
+            return valid_attachment.data, True
+        return valid_attachment.errors, False
 
-    #     letter_data, status = self.letter_data_handler(data)
+    def upload_attachment_to_save(self, attachments):
+        for attachment in attachments:
+            File.upload_file(**attachment)
 
-    #     _, file_path = File.upload_file(
-    #         file_name=file_name, extention=extention, file=file_file, base_dir=base_dir)
+    @transaction.atomic
+    def post(self, request, modeled_response=False, debug=False, **kwargs):
+        self.view_validator(request)
+        files = request.FILES
+        data = request.data
 
-    #     object_after__insert = p_model.objects.get(
-    #         letter_data_id=saved_object.letter_data_id)
-    #     p_serializer = self.serializer
-    #     serialized_data = p_serializer(object_after__insert).data
-    #     p_in_model = self.get_model_post
-    #     p_in_serializer = self.get_serializer_post
-    #     attatchments = p_in_model.objects.filter(
-    #         letter_data=object_after__insert.letter_data_id)
-    #     serialized_att = p_in_serializer(attatchments, many=True).data
+        letter_data, status = self.letter_data_handler(data)
+        if status:
+            letter_data_saved = LetterData.objects.create(**letter_data)
+            letter_data = LetterDataSerializer(data=letter_data_saved)
 
-    #     return Response({"data": serialized_data, "attachment": serialized_att}, status=return_status.HTTP_201_CREATED)
+        return_attachment_to_upload, return_attachment_to_save = self.attachment_data_handler(
+            files, letter_data)
+
+        attatchments, a_status = self.save_attachment_to_upload(
+            return_attachment_to_save)
+
+        self.upload_attachment_to_save(return_attachment_to_upload)
+
+        return Response({"data": letter_data, "attachment": attatchments}, status=return_status.HTTP_201_CREATED)
 
 
 class AttachmentTypeView(CRUDView):

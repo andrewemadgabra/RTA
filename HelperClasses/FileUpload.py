@@ -7,7 +7,7 @@ class File(object):
 
     @classmethod
     def get_new_file_name_with_extenstion(cls, filename):
-        extention = filename._name.split('.')[-1]
+        extention = filename.split('.')[-1]
         new_file_name = filename + File.get_random_string() + '.' + extention
         return new_file_name, extention
 
