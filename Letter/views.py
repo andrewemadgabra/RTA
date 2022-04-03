@@ -16,6 +16,24 @@ class LetterDataView(CRUDView):
     post_model = LetterAttachments
     post_serializer = LetterAttachmentsSerializer
 
+    def get(self, request, pk=None, modeled_response=False,
+            debug=False, data=None, many=True, **kwargs):
+
+        data, many = self.get_modeled_data(request, pk=pk, debug=debug)
+        serlized_data = self.get_serialized_data(
+            request, data=data, pk=pk, debug=debug, many=many)
+        if not(many) and data is not None:
+            attachments = LetterAttachments.objects.filter(
+                letter_data=serlized_data.get('letter_data_id'))
+            attachments = LetterAttachmentsSerializer(
+                attachments, many=True).data
+            serlized_data = {"letter": serlized_data,
+                             "attachment": attachments}
+
+        return_status = self.get_returned_status(
+            True if data is not None else False)
+        return Response(serlized_data, status=return_status)
+
     def letter_data_handler(self, data):
         b_serializer = self.serializer
         letter_object = b_serializer(data={"issued_number":  data.get('issued_number'),
@@ -87,7 +105,7 @@ class LetterDataView(CRUDView):
 
         return_status = self.post_json_reseponse_status(status)
 
-        return Response({"data": letter_data, "attachment": return_attachment}, status=return_status)
+        return Response({"letter": letter_data, "attachment": return_attachment}, status=return_status)
 
 
 class AttachmentTypeView(CRUDView):

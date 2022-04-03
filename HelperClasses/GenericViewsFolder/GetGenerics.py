@@ -144,6 +144,9 @@ class GetView(BaseView):
                 fields_names=fields_names, fields_values=fields_values, debug=debug)
         return self.get_serializer_get(data, many=many).data
 
+    def get_returned_status(self, status):
+        return return_status.HTTP_200_OK if status else return_status.HTTP_404_NOT_FOUND
+
     def get(self, request, pk=None, modeled_response=False,
             debug=False, data=None, many=True, **kwargs):
         if data is None:
