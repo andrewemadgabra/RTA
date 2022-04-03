@@ -85,10 +85,9 @@ CREATE TABLE LetterDataLogger
 
 CREATE TABLE AttachmentType
 (
-	[attachment_type_id] INT IDENTITY(1, 1) PRIMARY KEY,
 	[attachment_type_ar] NVARCHAR(128) NOT NULL ,
 	[attachment_type_en] NVARCHAR(128) NOT NULL ,
-	[content_type] NVARCHAR(128) NOT NULL UNIQUE,
+	[content_type] NVARCHAR(128) PRIMARY KEY,
 	[charset] NVARCHAR(128) NULL,
 	[max_size] INT NULL,
 	[created_at] DATETIME NOT NULL,
@@ -102,7 +101,7 @@ CREATE TABLE LetterAttachemnets
 	[letter_attach_name] NVARCHAR(256) NOT NULL ,
 	[file_path_on_server] NVARCHAR(512) NOT NULL ,
 	[letter_data_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[LetterData]([letter_data_id]) ON DELETE CASCADE,
-	[attachment_type_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[AttachmentType]([attachment_type_id]) ON DELETE CASCADE,
+	[content_type] NVARCHAR(128) NOT NULL FOREIGN KEY REFERENCES [dbo].[AttachmentType]([content_type]) ON DELETE CASCADE,
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 )

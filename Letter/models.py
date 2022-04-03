@@ -26,13 +26,12 @@ class LetterData(AbstractDateModels):
 
 
 class AttachmentType(AbstractDateModels):
-    attachment_type_id = models.AutoField(primary_key=True)
     attachment_type_ar = models.CharField(max_length=128, validators=[
         DjangoValidator().validation_ArabicLettersOrNumbers])
     attachment_type_en = models.CharField(max_length=128, validators=[
         DjangoValidator().validation_EnglishLetters])
 
-    content_type = models.CharField(max_length=128, unique=True)
+    content_type = models.CharField(max_length=128, primary_key=True)
     charset = models.CharField(max_length=128, null=True, blank=True)
     max_size = models.PositiveIntegerField(null=True, blank=True)
 
@@ -52,7 +51,8 @@ class LetterAttachments(AbstractDateModels):
     letter_data = models.ForeignKey(LetterData, models.CASCADE)
     letter_attach_name = models.CharField(max_length=128)
     file_path_on_server = models.CharField(max_length=128)
-    attachment_type = models.ForeignKey(AttachmentType, models.CASCADE)
+    attachment_type = models.ForeignKey(
+        AttachmentType, models.CASCADE, db_column='content_type')
 
     class Meta:
         managed = False
