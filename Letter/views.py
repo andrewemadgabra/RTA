@@ -88,12 +88,3 @@ class LetterDataView(CRUDView):
 class AttachmentTypeView(CRUDView):
     base_model = AttachmentType
     base_serializer = AttachmentTypeSerializer
-
-
-class FileUpload(APIView):
-
-    def post(self, request):
-        print(request.FILES.get('filename').__dict__)
-        print(request.data)
-
-        return Response()
