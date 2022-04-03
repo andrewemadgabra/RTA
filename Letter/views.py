@@ -1,12 +1,11 @@
 from Letter.models import LetterData, AttachmentType, LetterAttachments
 from Letter.serializers import LetterDataSerializer, AttachmentTypeSerializer, LetterAttachmentsSerializer
 from HelperClasses.GenericView import CRUDView
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from HelperClasses.FileUpload import File
 from RTA.settings import BASE_DIR, JSON_CONFIGRATION
 import os
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from User.models import User
 # Create your views here.
 
@@ -68,19 +67,25 @@ class LetterDataView(CRUDView):
 
         return files_data, True
 
-    @transaction.atomic
     def post(self, request, modeled_response=False, debug=False, **kwargs):
         self.view_validator(request)
         files = request.FILES
         data = request.data
 
         return_attachment = []
+        letter_data = {}
+        try:
+            with transaction.atomic():
+                letter_data, status = self.letter_data_handler(data)
+                if status:
+                    return_attachment, status = self.attachment_data_handler(
+                        files, letter_data)
+                if not(status):
+                    raise IntegrityError
+        except IntegrityError:
+            status = False
 
-        letter_data, status = self.letter_data_handler(data)
-        if status:
-            return_attachment, status = self.attachment_data_handler(
-                files, letter_data)
-            return_status = self.post_json_reseponse_status(status)
+        return_status = self.post_json_reseponse_status(status)
 
         return Response({"data": letter_data, "attachment": return_attachment}, status=return_status)
 
