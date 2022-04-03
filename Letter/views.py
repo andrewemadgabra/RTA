@@ -40,16 +40,15 @@ class LetterDataView(CRUDView):
             new_file_name, extention = File.get_new_file_name_with_extenstion(
                 file_value.name)
 
-            att = AttachmentType.objects.get(content_type=extention)
             letter_attachment = {"letter_data": letter_data.letter_data_id, "letter_attach_name": file_value.name,
-                                 "file_path_on_server": new_file_name, "attachment_type": att.attachment_type_id, }
+                                 "file_path_on_server": new_file_name, "attachment_type": extention, }
             valid_attachment = LetterAttachmentsSerializer(
                 data=letter_attachment)
             if valid_attachment.is_valid():
                 letter_attach_saved = LetterAttachments.objects.create(**{'letter_data': letter_data,
                                                                           'letter_attach_name': valid_attachment.validated_data.get('letter_attach_name'),
                                                                           'file_path_on_server':  valid_attachment.validated_data.get('file_path_on_server'),
-                                                                          'attachment_type':  att})
+                                                                          'attachment_type':  AttachmentType.objects.get(content_type=valid_attachment.validated_data.get("attachment_type"))})
                 files_data.append(LetterAttachmentsSerializer(
                     letter_attach_saved).data)
 

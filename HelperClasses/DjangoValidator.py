@@ -50,6 +50,6 @@ class DjangoValidator:
             '^[a-zA-Z\s]+$')
         if not(re.match(regex_english_letters, value)):
             raise ValidationError(
-                _("%(value)s doesn't match araibc letters or numbers"),
+                _("%(value)s doesn't match english letters or numbers"),
                 params={'value': value},
             )
