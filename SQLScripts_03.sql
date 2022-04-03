@@ -32,6 +32,13 @@ CREATE TABLE SubActors
 	[modified_at] DATETIME NULL
 )
 
+ALTER TABLE SubActors
+DROP COLUMN  [sub_actor_key]
+
+
+ALTER TABLE SubActors
+ADD sub_actor_parent INT NULL FOREIGN KEY REFERENCES SubActors([sub_actor_id])
+
 ALTER TABLE UserEmploymentJobStatus
 ADD [sub_actor_id] INT REFERENCES SubActors([sub_actor_id]) ON DELETE CASCADE ON UPDATE CASCADE
 
