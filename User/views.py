@@ -118,7 +118,7 @@ class ForceLogin(KnoxLoginView):
                 username=request.data['username'])
             self._delete_user_tokens(user)
             login(request, authontication_serializer.validated_data['user'])
-            new_token = super(Login, self).post(request, format=None).data
+            new_token = super(ForceLogin, self).post(request, format=None).data
             return Response(new_token, status=status.HTTP_200_OK)
         return Response(authontication_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
