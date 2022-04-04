@@ -91,8 +91,31 @@ class Login(KnoxLoginView):
                 username=request.data['username'])
             old_token = AuthToken.objects.filter(
                 user=user.id, expiry__gt=timezone.now())
-            # if len(old_token) > 0:
-            #     return Response({"error": ["already loged In"]}, status=status.HTTP_400_BAD_REQUEST)
+            if len(old_token) > 0:
+                return Response({"error": ["already loged In"]}, status=status.HTTP_400_BAD_REQUEST)
+            self._delete_user_tokens(user)
+            login(request, authontication_serializer.validated_data['user'])
+            new_token = super(Login, self).post(request, format=None).data
+            return Response(new_token, status=status.HTTP_200_OK)
+        return Response(authontication_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForceLogin(KnoxLoginView):
+    serializer_class = BaseUserSerializer
+    permission_classes = ()  # empty tuple
+
+    def _get_user_model(self):
+        return get_user_model()
+
+    def _delete_user_tokens(self, user):
+        AuthToken.objects.filter(
+            user=user.id).delete()
+
+    def post(self, request, *args, **kwargs):
+        authontication_serializer = AuthTokenSerializer(data=request.data)
+        if authontication_serializer.is_valid():
+            user = self._get_user_model().objects.get(
+                username=request.data['username'])
             self._delete_user_tokens(user)
             login(request, authontication_serializer.validated_data['user'])
             new_token = super(Login, self).post(request, format=None).data
