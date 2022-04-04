@@ -91,8 +91,8 @@ class Login(KnoxLoginView):
                 username=request.data['username'])
             old_token = AuthToken.objects.filter(
                 user=user.id, expiry__gt=timezone.now())
-            if len(old_token) > 0:
-                return Response({"error": ["already loged In"]}, status=status.HTTP_400_BAD_REQUEST)
+            # if len(old_token) > 0:
+            #     return Response({"error": ["already loged In"]}, status=status.HTTP_400_BAD_REQUEST)
             self._delete_user_tokens(user)
             login(request, authontication_serializer.validated_data['user'])
             new_token = super(Login, self).post(request, format=None).data
