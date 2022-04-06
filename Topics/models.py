@@ -1,5 +1,3 @@
-from statistics import mode
-from this import d
 from django.db import models
 from HelperClasses.AbstractDateModels import AbstractDateModels
 from HelperClasses.DjangoValidator import DjangoValidator
@@ -30,7 +28,7 @@ class TopicClassification(AbstractDateModels):
     topic_classification_En = models.CharField(max_length=128, unique=True, validators=[
         DjangoValidator().validation_EnglishLetters])
     main_topic = models.ForeignKey(
-        MainTopic, models.CASCADE, related_name="main_topic", db_column="action_user")
+        MainTopic, models.CASCADE, related_name="main_topic_classification", db_column="main_topic_id")
 
     class Meta:
         managed = False
@@ -42,6 +40,7 @@ class TopicClassification(AbstractDateModels):
     def __repr__(self):
         return self.topic_classification_En
 
+
 class TopicSubcategories(AbstractDateModels):
     topic_subcategories_id = models.AutoField(primary_key=True)
     topic_subcategories_Ar = models.CharField(max_length=128, unique=True, validators=[
@@ -49,7 +48,7 @@ class TopicSubcategories(AbstractDateModels):
     topic_subcategories_En = models.CharField(max_length=128, unique=True, validators=[
         DjangoValidator().validation_EnglishLetters])
     topic_classification = models.ForeignKey(
-        TopicClassification, models.CASCADE, related_name="topic_classification", db_column="action_user")
+        TopicClassification, models.CASCADE, related_name="topic_class_subcat", db_column="topic_classification_id")
 
     class Meta:
         managed = False
