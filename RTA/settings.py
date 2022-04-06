@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'Actors',
     'Periority',
     'Letter',
+    'Topics',
 
 ]
 

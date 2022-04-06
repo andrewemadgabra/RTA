@@ -112,3 +112,32 @@ CREATE TABLE LetterAttachemnets
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 )
+
+CREATE TABLE MainTopic
+(
+	[main_topic_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[main_topic_Ar] NVARCHAR(128) NOT NULL ,
+	[main_topic_En] NVARCHAR(128) NOT NULL ,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE TopicClassification
+(
+	[topic_classification_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[topic_classification_Ar] NVARCHAR(128) NOT NULL ,
+	[topic_classification_En] NVARCHAR(128) NOT NULL ,
+	[main_topic] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[MainTopic]([main_topic_id]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE TopicSubcategories
+(
+	[topic_subcategories_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[topic_subcategories_Ar] NVARCHAR(128) NOT NULL ,
+	[topic_subcategories_En] NVARCHAR(128) NOT NULL ,
+	[topic_classification] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[TopicClassification]([topic_classification_id]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
