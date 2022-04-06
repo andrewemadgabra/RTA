@@ -59,7 +59,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
             middle_name=validated_data['middle_name'],
             gender=validated_data['gender'],
             number_of_identification=validated_data['number_of_identification'],
-            home_address=validated_data['home_address'],
+            home_address=validated_data.get('home_address'),
             mobile=validated_data['mobile'],
         )
         user.groups.set(validated_data['groups'])

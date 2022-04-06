@@ -1,13 +1,11 @@
 from Letter.models import LetterData, AttachmentType, LetterAttachments
 from Letter.serializers import LetterDataSerializer, AttachmentTypeSerializer, LetterAttachmentsSerializer
 from HelperClasses.GenericView import CRUDView
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status as return_status
 from HelperClasses.FileUpload import File
 from RTA.settings import BASE_DIR, JSON_CONFIGRATION
 import os
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from User.models import User
 # Create your views here.
 
@@ -18,6 +16,24 @@ class LetterDataView(CRUDView):
     post_model = LetterAttachments
     post_serializer = LetterAttachmentsSerializer
 
+    def get(self, request, pk=None, modeled_response=False,
+            debug=False, data=None, many=True, **kwargs):
+
+        data, many = self.get_modeled_data(request, pk=pk, debug=debug)
+        serlized_data = self.get_serialized_data(
+            request, data=data, pk=pk, debug=debug, many=many)
+        if not(many) and data is not None:
+            attachments = LetterAttachments.objects.filter(
+                letter_data=serlized_data.get('letter_data_id'))
+            attachments = LetterAttachmentsSerializer(
+                attachments, many=True).data
+            serlized_data = {"letter": serlized_data,
+                             "attachment": attachments}
+
+        return_status = self.get_returned_status(
+            True if data is not None else False)
+        return Response(serlized_data, status=return_status)
+
     def letter_data_handler(self, data):
         b_serializer = self.serializer
         letter_object = b_serializer(data={"issued_number":  data.get('issued_number'),
@@ -25,85 +41,73 @@ class LetterDataView(CRUDView):
                                            "action_user":  1
                                            }
                                      )
-
         if letter_object.is_valid():
-            return letter_object.data, True
+            letter_data_saved = LetterData.objects.create(**{"issued_number": letter_object.validated_data.get(
+                "issued_number"), "letter_title":  letter_object.validated_data.get("letter_title"), "action_user": User.objects.get(pk=1)})
+            letter_data = LetterDataSerializer(letter_data_saved)
+            return letter_data.data, True
         return letter_object.errors, False
 
     def attachment_data_handler(self, files, letter_data):
-        return_attachment_to_upload = []
-        return_attachment_to_save = []
-        pk_of_attachment_type = {}
+        letter_data = LetterData.objects.get(
+            letter_data_id=letter_data.get('letter_data_id'))
+        saved_files = []
+        files_data = []
         for file_name, file_value in files.items():
             new_file_name, extention = File.get_new_file_name_with_extenstion(
                 file_value.name)
-            return_attachment_to_upload.append(
-                {
+
+            letter_attachment = {"letter_data": letter_data.letter_data_id, "letter_attach_name": file_value.name,
+                                 "file_path_on_server": new_file_name, "attachment_type": extention, }
+            valid_attachment = LetterAttachmentsSerializer(
+                data=letter_attachment)
+            if valid_attachment.is_valid():
+                letter_attach_saved = LetterAttachments.objects.create(**{'letter_data': letter_data,
+                                                                          'letter_attach_name': valid_attachment.validated_data.get('letter_attach_name'),
+                                                                          'file_path_on_server':  valid_attachment.validated_data.get('file_path_on_server'),
+                                                                          'attachment_type':  AttachmentType.objects.get(content_type=valid_attachment.validated_data.get("attachment_type"))})
+                files_data.append(LetterAttachmentsSerializer(
+                    letter_attach_saved).data)
+
+                ##### phiscal upload step #######
+                File.upload_file(**{
                     "file_name": new_file_name,
                     "extention":  extention,
                     "file": files[file_name],
                     "base_dir": os.path.join(BASE_DIR, JSON_CONFIGRATION['STATIC_DIR'])
-                }
-            )
-            att = AttachmentType.objects.get(content_type=extention)
-            return_attachment_to_save.append(
-                {
-                    "letter_data": letter_data['letter_data_id'],
-                    "letter_attach_name": file_name,
-                    "file_path_on_server": new_file_name,
-                    "attachment_type": att.attachment_type_id,
-                    "attachment_type_obj": att
-                }
-            )
+                })
+                ##### end of phiscal upload #######
+                saved_files.append(new_file_name)
+            else:
+                [os.remove(os.path.join(JSON_CONFIGRATION['STATIC_DIR'], new_file_name))
+                 for new_file_name in saved_files]
+                return valid_attachment.errors, False
 
-        return return_attachment_to_upload, return_attachment_to_save
+        return files_data, True
 
-    def save_attachment_to_upload(self, attachments, letter_data):
-        valid_attachment = LetterAttachmentsSerializer(
-            data=attachments, many=True)
-        if valid_attachment.is_valid():
-            for attachment in attachments:
-                LetterAttachments.objects.create(**{"letter_data": letter_data, "letter_attach_name": attachment.get(
-                    'letter_attach_name'), "file_path_on_server": attachment.get('file_path_on_server'), "attachment_type": attachment.get('attachment_type_obj')})
-            return valid_attachment.data, True
-        return valid_attachment.errors, False
-
-    def upload_attachment_to_save(self, attachments):
-        for attachment in attachments:
-            File.upload_file(**attachment)
-
-    @transaction.atomic
     def post(self, request, modeled_response=False, debug=False, **kwargs):
         self.view_validator(request)
         files = request.FILES
         data = request.data
 
-        letter_data, status = self.letter_data_handler(data)
-        if status:
-            letter_data_saved = LetterData.objects.create(**{"issued_number": letter_data.get(
-                "issued_number"), "letter_title":  letter_data.get("letter_title"), "action_user": User.objects.get(pk=1)})
-            letter_data = LetterDataSerializer(letter_data_saved).data
+        return_attachment = []
+        letter_data = {}
+        try:
+            with transaction.atomic():
+                letter_data, status = self.letter_data_handler(data)
+                if status:
+                    return_attachment, status = self.attachment_data_handler(
+                        files, letter_data)
+                if not(status):
+                    raise IntegrityError
+        except IntegrityError:
+            status = False
 
-            return_attachment_to_upload, return_attachment_to_save = self.attachment_data_handler(
-                files, letter_data)
+        return_status = self.post_json_reseponse_status(status)
 
-            attatchments, a_status = self.save_attachment_to_upload(
-                return_attachment_to_save, letter_data=letter_data_saved)
-
-            self.upload_attachment_to_save(return_attachment_to_upload)
-
-        return Response({"data": letter_data, "attachment": attatchments}, status=return_status.HTTP_201_CREATED)
+        return Response({"letter": letter_data, "attachment": return_attachment}, status=return_status)
 
 
 class AttachmentTypeView(CRUDView):
     base_model = AttachmentType
     base_serializer = AttachmentTypeSerializer
-
-
-class FileUpload(APIView):
-
-    def post(self, request):
-        print(request.FILES.get('filename').__dict__)
-        print(request.data)
-
-        return Response()

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'Actors',
     'Periority',
     'Letter',
+    'Topics',
 
 ]
 
@@ -170,7 +171,7 @@ REST_FRAMEWORK = {
 
 REST_KNOX = {'TOKEN_TTL': timedelta(hours=24),
              'TOKEN_LIMIT_PER_USER':  1,
-             "AUTH_HEADER_PREFIX": ""}
+             }
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

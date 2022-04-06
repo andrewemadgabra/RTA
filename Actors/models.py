@@ -51,7 +51,8 @@ class SubActors(AbstractDateModels):
                                     DjangoValidator().validation_ArabicLettersOrNumbers])
     sub_actor_En = models.CharField(max_length=128, unique=True, validators=[
                                     DjangoValidator().validation_EnglishLetters])
-    sub_actor_key = models.CharField(max_length=128)
+    sub_actor_parent = models.ForeignKey(
+        "self",  models.CASCADE, db_column='sub_actor_parent')
 
     class Meta:
         managed = False

@@ -32,6 +32,13 @@ CREATE TABLE SubActors
 	[modified_at] DATETIME NULL
 )
 
+ALTER TABLE SubActors
+DROP COLUMN  [sub_actor_key]
+
+
+ALTER TABLE SubActors
+ADD sub_actor_parent INT NULL FOREIGN KEY REFERENCES SubActors([sub_actor_id])
+
 ALTER TABLE UserEmploymentJobStatus
 ADD [sub_actor_id] INT REFERENCES SubActors([sub_actor_id]) ON DELETE CASCADE ON UPDATE CASCADE
 
@@ -85,10 +92,9 @@ CREATE TABLE LetterDataLogger
 
 CREATE TABLE AttachmentType
 (
-	[attachment_type_id] INT IDENTITY(1, 1) PRIMARY KEY,
 	[attachment_type_ar] NVARCHAR(128) NOT NULL ,
 	[attachment_type_en] NVARCHAR(128) NOT NULL ,
-	[content_type] NVARCHAR(128) NOT NULL UNIQUE,
+	[content_type] NVARCHAR(128) PRIMARY KEY,
 	[charset] NVARCHAR(128) NULL,
 	[max_size] INT NULL,
 	[created_at] DATETIME NOT NULL,
@@ -102,7 +108,36 @@ CREATE TABLE LetterAttachemnets
 	[letter_attach_name] NVARCHAR(256) NOT NULL ,
 	[file_path_on_server] NVARCHAR(512) NOT NULL ,
 	[letter_data_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[LetterData]([letter_data_id]) ON DELETE CASCADE,
-	[attachment_type_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[AttachmentType]([attachment_type_id]) ON DELETE CASCADE,
+	[content_type] NVARCHAR(128) NOT NULL FOREIGN KEY REFERENCES [dbo].[AttachmentType]([content_type]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE MainTopic
+(
+	[main_topic_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[main_topic_Ar] NVARCHAR(128) NOT NULL ,
+	[main_topic_En] NVARCHAR(128) NOT NULL ,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE TopicClassification
+(
+	[topic_classification_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[topic_classification_Ar] NVARCHAR(128) NOT NULL ,
+	[topic_classification_En] NVARCHAR(128) NOT NULL ,
+	[main_topic] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[MainTopic]([main_topic_id]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE TopicSubcategories
+(
+	[topic_subcategories_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[topic_subcategories_Ar] NVARCHAR(128) NOT NULL ,
+	[topic_subcategories_En] NVARCHAR(128) NOT NULL ,
+	[topic_classification] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[TopicClassification]([topic_classification_id]) ON DELETE CASCADE,
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 )
