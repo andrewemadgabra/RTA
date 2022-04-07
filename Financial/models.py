@@ -25,8 +25,7 @@ class FinancialClaimsStatus(AbstractDateModels):
 
 class FinancialClaims(AbstractDateModels):
     financial_claims_id = models.AutoField(primary_key=True)
-    target = models.CharField(max_length=512, validators=[
-            DjangoValidator().validation_ArabicLettersOrNumbers])
+    target = models.CharField(max_length=512)
     value = models.FloatField()
     financial_claims_status = models.ForeignKey(
         FinancialClaimsStatus, models.CASCADE, related_name="financial_claims_status", 

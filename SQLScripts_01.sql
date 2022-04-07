@@ -158,19 +158,19 @@ CREATE TABLE EmploymentStatus
 )
 
 
+CREATE TABLE System_Table(
+[system_id] INT PRIMARY KEY IDENTITY(1,1),
+[system_ar] NVARCHAR(128) NOT NULL UNIQUE, 
+[system_en] NVARCHAR(128) NOT NULL UNIQUE, 
+[created_at] DATETIME NOT NULL, 
+[modified_at] DATETIME NULL
+)
 
-CREATE TABLE UserEmploymentJobStatus
-(
-    [created_at] DATETIME NOT NULL ,
-    [modified_at] DATETIME NULL ,
-    [user_employment_id] INT PRIMARY KEY IDENTITY(1,1),
-    [user_id] INT NOT NULL FOREIGN KEY REFERENCES User_User([id])  ON DELETE CASCADE
-ON UPDATE CASCADE,
-    [employment_id] INT NOT NULL FOREIGN KEY REFERENCES EmploymentStatus([employment_id])  ON DELETE CASCADE
-ON UPDATE CASCADE,
-    [job_id] INT NOT NULL FOREIGN KEY REFERENCES Jobs([job_id])  ON DELETE CASCADE
-ON UPDATE CASCADE,
-    [action_user] INT NOT NULL FOREIGN KEY REFERENCES User_User([id]) ON DELETE CASCADE
-ON UPDATE CASCADE,
-    CONSTRAINT UC_User_EmploymentStatus UNIQUE ([employment_id],[user_id])
+
+CREATE TABLE SystemGroup(
+[system_group_id] INT PRIMARY KEY IDENTITY(1,1),
+[group_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[Auth_Group](id) ON DELETE CASCADE UNIQUE, 
+[system_id] INT NOT NULL FOREIGN KEY REFERENCES System_Table([system_id]) ON DELETE CASCADE , 
+[created_at] DATETIME NOT NULL, 
+[modified_at] DATETIME NULL
 )

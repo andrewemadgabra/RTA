@@ -17,7 +17,8 @@ class LetterData(AbstractDateModels):
     topic_subcategories = models.ForeignKey(TopicSubcategories, models.CASCADE)
     sub_actor = models.ForeignKey(SubActors, models.CASCADE)
     delivery_user = models.ForeignKey(User, models.CASCADE)
-    delivery_method_id = models.ForeignKey(DeliveryMethod, models.CASCADE)
+    delivery_method = models.ForeignKey(DeliveryMethod, models.CASCADE)
+    project_sections = models.ForeignKey(ProjectSections, models.CASCADE)
     
 
     class Meta:
