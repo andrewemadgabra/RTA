@@ -1,10 +1,11 @@
 from django.db import models
 from HelperClasses.AbstractDateModels import AbstractDateModels
 from User.models import User
+from Topics.models import TopicSubcategories
+from Projects.models import ProjectSections
+from Actors.models import SubActors
+from Periority.models import DeliveryMethod
 from HelperClasses.DjangoValidator import DjangoValidator
-from django.conf import settings
-import os
-# Create your models here.
 
 
 class LetterData(AbstractDateModels):
@@ -13,6 +14,11 @@ class LetterData(AbstractDateModels):
     letter_title = models.CharField(max_length=256)
     action_user = models.ForeignKey(
         User, models.CASCADE, related_name="creator_letter", db_column="action_user")
+    topic_subcategories = models.ForeignKey(TopicSubcategories, models.CASCADE)
+    sub_actor = models.ForeignKey(SubActors, models.CASCADE)
+    delivery_user = models.ForeignKey(User, models.CASCADE)
+    delivery_method_id = models.ForeignKey(DeliveryMethod, models.CASCADE)
+    
 
     class Meta:
         managed = False

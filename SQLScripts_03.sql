@@ -74,6 +74,11 @@ CREATE TABLE LetterData
 	[issued_number] INT NOT NULL ,
 	[letter_title] NVARCHAR(256) NOT NULL ,
 	[action_user] INT NOT NULL FOREIGN KEY REFERENCES User_User([id])  ON DELETE CASCADE,
+	[topic_subcategories_id] INT NOT NULL FOREIGN KEY REFERENCES TopicSubcategories([topic_subcategories_id])  ON DELETE CASCADE,
+	[project_section_id] INT NOT NULL FOREIGN KEY REFERENCES ProjectSections([project_section_id])  ON DELETE CASCADE,
+	[sub_actor_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_id]),
+	[delivery_user_id] INT FOREIGN KEY REFERENCES [dbo].[User_User]([id]) ON DELETE CASCADE,
+	[delivery_method_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[DeliveryMethod]([delivery_method_id]) ON DELETE CASCADE,
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 	CHECK ([issued_number] >= 0),
@@ -137,7 +142,56 @@ CREATE TABLE TopicSubcategories
 	[topic_subcategories_id] INT IDENTITY(1, 1) PRIMARY KEY,
 	[topic_subcategories_Ar] NVARCHAR(128) NOT NULL ,
 	[topic_subcategories_En] NVARCHAR(128) NOT NULL ,
-	[topic_classification] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[TopicClassification]([topic_classification_id]) ON DELETE CASCADE,
+	[topic_classification_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[TopicClassification]([topic_classification_id]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE FinancialClaimsStatus
+(
+	[financial_claims_status_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[financial_claims_status_Ar] NVARCHAR(128) NOT NULL ,
+	[financial_claims_status_En] NVARCHAR(128) NOT NULL ,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE FinancialClaims
+(
+	[financial_claims_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[target] NVARCHAR(512),
+	[value] DEC(18,2),
+	[financial_claims_status_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[FinancialClaimsStatus]([financial_claims_status_id]) ON DELETE CASCADE,
+	[sub_actor_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_ID]) ON DELETE CASCADE,
+	[letter_data_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[LetterData]([letter_data_id]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE Projects
+(
+	[project_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[project_Ar] NVARCHAR(128) NOT NULL ,
+	[project_En] NVARCHAR(128) NOT NULL ,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE ProjectSections
+(
+	[project_section_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[project_section_Ar] NVARCHAR(128) NOT NULL ,
+	[project_section_En] NVARCHAR(128) NOT NULL ,
+	[project_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[Projects]([project_id]) ON DELETE CASCADE,
+	[created_at] DATETIME NOT NULL,
+	[modified_at] DATETIME NULL,
+)
+
+CREATE TABLE ProjectContracts
+(
+	[project_contract_id] INT IDENTITY(1, 1) PRIMARY KEY,
+	[project_contract_num] NVARCHAR(128),
+	[project_section_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[ProjectSections]([project_section_id]) ON DELETE CASCADE,
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 )

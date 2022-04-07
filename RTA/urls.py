@@ -26,6 +26,8 @@ urlpatterns = [
     path('periority/', include("Periority.urls")),
     path('letter/', include("Letter.urls")),
     path('topics/', include("Topics.urls")),
+    path('projects/', include("Projects.urls")),
+    path('financial/', include("Financial.urls")),
 ]
 
 
