@@ -116,22 +116,22 @@ CORS_ALLOW_HEADERS = [
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'sql_server.pyodbc',
-    #     'NAME': JSON_CONFIGRATION['DATABASE_NAME'],
-    #     'HOST': JSON_CONFIGRATION['DATABASE_HOST'],
-    #     'USER': JSON_CONFIGRATION['DATABASE_USER'],
-    #     'PASSWORD': JSON_CONFIGRATION['DATABASE_PASSWORD'],
-    #     'OPTIONS': {
-    #         'driver': 'ODBC Driver 17 for SQL Server',
-    #         'unicode_results': True,
-    #     },
-
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'ENGINE': 'sql_server.pyodbc',
+        'NAME': JSON_CONFIGRATION['DATABASE_NAME'],
+        'HOST': JSON_CONFIGRATION['DATABASE_HOST'],
+        'USER': JSON_CONFIGRATION['DATABASE_USER'],
+        'PASSWORD': JSON_CONFIGRATION['DATABASE_PASSWORD'],
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'unicode_results': True,
+        },
+
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': 'db.sqlite3',
+    # }
 }
 
 

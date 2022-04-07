@@ -37,8 +37,12 @@ class SubActorsSerializer(serializers.ModelSerializer):
 
 class SubActorsGETSerializer(serializers.ModelSerializer):
     main_actor = MainActorsGETSerializer()
+    count_of_children = serializers.SerializerMethodField()
 
     class Meta:
         model = SubActors
         fields = "__all__"
         read_only_fields = ('id', 'created_at')
+
+    def get_count_of_children(self, obj):
+        return SubActors.objects.filter(sub_actor_parent=obj.id).count()
