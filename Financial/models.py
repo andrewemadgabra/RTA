@@ -26,7 +26,7 @@ class FinancialClaimsStatus(AbstractDateModels):
 class FinancialClaims(AbstractDateModels):
     financial_claims_id = models.AutoField(primary_key=True)
     target = models.CharField(max_length=512)
-    value = models.FloatField()
+    value = models.DecimalField(max_digits=18,decimal_places=2)
     financial_claims_status = models.ForeignKey(
         FinancialClaimsStatus, models.CASCADE, related_name="financial_claims_status", 
         db_column="financial_claims_status_id")
