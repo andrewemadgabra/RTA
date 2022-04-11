@@ -52,7 +52,7 @@ class SubActors(AbstractDateModels):
     sub_actor_En = models.CharField(max_length=128, unique=True, validators=[
                                     DjangoValidator().validation_EnglishLetters])
     sub_actor_parent = models.ForeignKey(
-        "self",  models.CASCADE, db_column='sub_actor_parent')
+        "self",  models.CASCADE, db_column='sub_actor_parent', blank=True, null=True)
 
     class Meta:
         managed = False
