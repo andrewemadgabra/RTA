@@ -1,6 +1,7 @@
 from Topics.models import MainTopic, TopicClassification, TopicSubcategories
 from Topics.serializers import (MainTopicSerializer, TopicClassificationSerializer,
-                                TopicSubcategoriesSerializer)
+                                TopicSubcategoriesSerializer, TopicClassificationGETSerializer,
+                                TopicSubcategoriesGETSerializer)
 
 from HelperClasses.GenericView import CRUDView
 
@@ -13,8 +14,10 @@ class MainTopicView(CRUDView):
 class TopicClassificationView(CRUDView):
     base_model = TopicClassification
     base_serializer = TopicClassificationSerializer
+    get_serializer = TopicClassificationGETSerializer
 
 
 class TopicSubcategoriesView(CRUDView):
     base_model = TopicSubcategories
     base_serializer = TopicSubcategoriesSerializer
+    get_serializer = TopicSubcategoriesGETSerializer

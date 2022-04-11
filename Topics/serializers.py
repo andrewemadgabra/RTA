@@ -24,3 +24,22 @@ class TopicSubcategoriesSerializer(serializers.ModelSerializer):
         model = TopicSubcategories
         fields = "__all__"
         read_only_fields = ('topic_subcategories_id', 'created_at')
+
+
+class TopicClassificationGETSerializer(serializers.ModelSerializer):
+    main_topic = MainTopicSerializer()
+
+    class Meta:
+        model = TopicClassification
+        fields = "__all__"
+        read_only_fields = ('topic_classification_id', 'created_at')
+
+
+
+class TopicSubcategoriesGETSerializer(serializers.ModelSerializer):
+    topic_classification = TopicClassificationSerializer()
+
+    class Meta:
+        model = TopicSubcategories
+        fields = "__all__"
+        read_only_fields = ('topic_subcategories_id', 'created_at')
