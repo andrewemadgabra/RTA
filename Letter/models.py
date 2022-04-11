@@ -18,7 +18,7 @@ class LetterData(AbstractDateModels):
     sub_actor = models.ForeignKey(SubActors, models.CASCADE)
     delivery_user = models.ForeignKey(User, models.CASCADE)
     delivery_method = models.ForeignKey(DeliveryMethod, models.CASCADE)
-    project_sections = models.ForeignKey(ProjectSections, models.CASCADE)
+    project_section = models.ForeignKey(ProjectSections, models.CASCADE)
     
 
     class Meta:

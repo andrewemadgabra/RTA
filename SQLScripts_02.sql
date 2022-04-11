@@ -159,7 +159,7 @@ CREATE TABLE LetterData
 	[sub_actor_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_id]),
 	[delivery_user_id] INT FOREIGN KEY REFERENCES [dbo].[User_User]([id]),
 	[delivery_method_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[DeliveryMethod]([delivery_method_id]) ON DELETE CASCADE,
-	[project_sections_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[ProjectSections]([project_section_id]),
+	[project_section_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[ProjectSections]([project_section_id]),
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 	CHECK ([issued_number] >= 0),
