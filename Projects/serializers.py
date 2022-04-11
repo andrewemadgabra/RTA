@@ -24,3 +24,22 @@ class ProjectContractsSerializer(serializers.ModelSerializer):
         model = ProjectContracts
         fields = "__all__"
         read_only_fields = ('project_contract_id', 'created_at')
+
+
+class ProjectSectionsGETSerializer(serializers.ModelSerializer):
+    project = ProjectsSerializer()
+
+    class Meta:
+        model = ProjectSections
+        fields = "__all__"
+        read_only_fields = ('project_section_id', 'created_at')
+
+
+class ProjectContractsGETSerializer(serializers.ModelSerializer):
+    project_section = ProjectSectionsSerializer()
+
+    class Meta:
+        model = ProjectContracts
+        fields = "__all__"
+        read_only_fields = ('project_contract_id', 'created_at')
+
