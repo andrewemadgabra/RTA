@@ -24,6 +24,7 @@ class LetterData(AbstractDateModels):
     class Meta:
         managed = False
         db_table = "LetterData"
+        ordering = ('letter_data_id',)
 
     def __str__(self):
         return self.letter_title
@@ -45,6 +46,7 @@ class AttachmentType(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'AttachmentType'
+        ordering = ('created_at',)
 
     def __str__(self):
         return self.attachment_type_en
@@ -64,6 +66,7 @@ class LetterAttachments(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'LetterAttachemnets'
+        ordering = ('letter_attachment_id',)
 
     def __str__(self):
         return self.letter_attach_name

@@ -15,6 +15,7 @@ class EntityCassification(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'EntityCassification'
+        ordering = ('entity_id',)
 
     def __str__(self):
         return self.entity_En
@@ -35,6 +36,7 @@ class MainActors(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'MainActors'
+        ordering = ('main_actor_id',)
 
     def __str__(self):
         return self.main_actor_En
@@ -57,6 +59,7 @@ class SubActors(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'SubActors'
+        ordering = ('sub_actor_id',)
 
     def __str__(self):
         return self.sub_actor_En

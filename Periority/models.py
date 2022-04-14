@@ -14,6 +14,7 @@ class DeliveryMethod(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'DeliveryMethod'
+        ordering = ('delivery_method_id',)
 
     def __str__(self):
         return self.delivery_Method_name_en
@@ -32,6 +33,7 @@ class PriorityLevel(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'PriorityLevel'
+        ordering = ('priority_level_id',)
 
     def __str__(self):
         return self.priority_level_en

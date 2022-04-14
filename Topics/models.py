@@ -13,6 +13,7 @@ class MainTopic(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'MainTopic'
+        ordering = ('main_topic_id',)
 
     def __str__(self):
         return self.main_topic_En
@@ -33,6 +34,7 @@ class TopicClassification(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'TopicClassification'
+        ordering = ('topic_classification_id',)
 
     def __str__(self):
         return self.topic_classification_En
@@ -53,6 +55,7 @@ class TopicSubcategories(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'TopicSubcategories'
+        ordering = ('topic_subcategories_id',)
 
     def __str__(self):
         return self.topic_subcategories_En

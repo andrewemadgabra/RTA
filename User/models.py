@@ -46,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin, AbstractDateModels):
     mobile = models.CharField(
         unique=True, max_length=14, validators=[DjangoValidator().validation_EgyptionMobileNumber])
 
+
     objects = UserManager()
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'middle_name',
@@ -111,6 +112,7 @@ class System(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'System_Table'
+        ordering = ('system_id',)
 
     def __str__(self):
         return self.system_en
@@ -129,6 +131,7 @@ class SystemGroup(AbstractDateModels):
         managed = False
         db_table = 'SystemGroup'
         unique_together = ('group', 'system')
+        ordering = ('system_group_id',)
 
     def __str__(self):
         return "{} | {}".format(self.group.name, self.system.system_en)
@@ -154,6 +157,7 @@ class UserEmploymentJobStatus(AbstractDateModels):
         managed = False
         db_table = 'UserEmploymentJobStatus'
         unique_together = ('user', 'employment', 'job')
+        ordering = ('user_employment_id',)
 
     def __str__(self):
         return "{} | {} | {}".format(self.user.full_Name, self.employment.employment_title_En, self.job.job_title_En)

@@ -15,6 +15,7 @@ class EmploymentStatus(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'EmploymentStatus'
+        ordering = ('employment_id',)
 
     def __str__(self):
         return self.employment_title_En

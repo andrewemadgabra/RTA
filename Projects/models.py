@@ -13,6 +13,7 @@ class Projects(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'Projects'
+        ordering = ('project_id',)
 
     def __str__(self):
         return self.project_En
@@ -33,6 +34,7 @@ class ProjectSections(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'ProjectSections'
+        ordering = ('project_section_id',)
 
     def __str__(self):
         return self.project_section_En
@@ -50,6 +52,7 @@ class ProjectContracts(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'ProjectContracts'
+        ordering = ('project_contract_id',)
 
     def __str__(self):
         return self.project_contract_En

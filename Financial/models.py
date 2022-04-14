@@ -15,6 +15,7 @@ class FinancialClaimsStatus(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'FinancialClaimsStatus'
+        ordering = ('financial_claims_status_id',)
 
     def __str__(self):
         return self.financial_claims_status_En
@@ -40,6 +41,7 @@ class FinancialClaims(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'FinancialClaims'
+        ordering = ('financial_claims_id',)
 
     def __str__(self):
         return self.target
