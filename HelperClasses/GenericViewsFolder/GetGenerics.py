@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status as return_status
 from HelperClasses.GenericViewsFolder.BaseView import BaseView
 from django.core.exceptions import FieldDoesNotExist
+from rest_framework.pagination import PageNumberPagination
 import json
 
 
@@ -144,6 +145,15 @@ class GetView(BaseView):
                 fields_names=fields_names, fields_values=fields_values, debug=debug)
         return self.get_serializer_get(data, many=many).data
 
+    def intiate_pagenation_object(self):
+        return PageNumberPagination()
+
+    def get_pagenation(self, pagenator, request, data):
+        return pagenator.paginate_queryset(data, request)
+
+    def get_pagenation_response(self, pagenator, data):
+        return pagenator.get_paginated_response(data)
+
     def get_returned_status(self, status):
         return return_status.HTTP_200_OK if status else return_status.HTTP_404_NOT_FOUND
 
@@ -155,6 +165,15 @@ class GetView(BaseView):
         if data == None and not(many):
             return Response({}, status=return_status.HTTP_404_NOT_FOUND)
 
+        if (request.GET.get('page') is not None) and (many == True):
+            pagenator = self.intiate_pagenation_object()
+            data = self.get_pagenation(pagenator, request, data)
+
         serlized_data = self.get_serialized_data(
             request, data=data, pk=pk, debug=debug, many=many)
+
+        if (request.GET.get('page') is not None) and (many == True):
+            return self.get_pagenation_response(
+                pagenator, serlized_data)
+
         return Response(serlized_data, status=return_status.HTTP_200_OK)

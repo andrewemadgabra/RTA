@@ -16,6 +16,7 @@ class Jobs(AbstractDateModels):
     class Meta:
         managed = False
         db_table = 'Jobs'
+        ordering = ('job_id',)
 
     def __str__(self):
         return self.job_title_En
