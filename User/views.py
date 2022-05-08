@@ -1,3 +1,4 @@
+from tokenize import group
 from rest_framework.response import Response
 from rest_framework import status
 from knox.views import LoginView as KnoxLoginView, LogoutView as KnoxLogoutView
@@ -28,6 +29,17 @@ class UserEmploymentJobStatus(CRUView):
     base_model = UserEmploymentJobStatus
     base_serializer = UserEmploymentJobStatusSerializer
     get_serializer = UserEmploymentJobStatusGETSerializer
+
+    def post(self, request, *args, **kwargs):
+        groups_id = request.pop('groups_id', [])     
+        response = super(UserEmploymentJobStatus, self).post(request, *args, **kwargs)
+        if response.status_code == 200:
+            user = User.objects.get(id=request.data['user'])
+            groups = Group.objects.filter(pk__in=groups_id).values_list('id')
+            user.groups.set(groups)
+            user.update_user_permissions()
+
+        return response
 
 
 class GroupView(CRUDView):
