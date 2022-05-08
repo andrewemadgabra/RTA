@@ -29,6 +29,16 @@ class MainActorsGETSerializer(serializers.ModelSerializer):
 
 class SubActorsSerializer(serializers.ModelSerializer):
 
+    def validate_sub_actor_parent(self, value):
+
+        main_actor_id_child = self.initial_data['main_actor']
+        main_actor_id_parent = value.main_actor_id
+
+        if(main_actor_id_child != main_actor_id_parent):
+            raise serializers.ValidationError("Main Actor ID Must be Equal")
+
+        return super().validate(value)
+
     class Meta:
         model = SubActors
         fields = "__all__"
