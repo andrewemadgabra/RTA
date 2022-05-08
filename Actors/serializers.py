@@ -35,7 +35,7 @@ class SubActorsSerializer(serializers.ModelSerializer):
         main_actor_id_parent = value.main_actor_id
 
         if(main_actor_id_child != main_actor_id_parent):
-            raise serializers.ValidationError("Main Actor ID Must be Equal")
+            raise serializers.ValidationError("Main Actor ID Must be Equal To Sub Actor ID")
 
         return super().validate(value)
 
