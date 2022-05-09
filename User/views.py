@@ -1,4 +1,3 @@
-from tokenize import group
 from rest_framework.response import Response
 from rest_framework import status
 from knox.views import LoginView as KnoxLoginView, LogoutView as KnoxLogoutView
