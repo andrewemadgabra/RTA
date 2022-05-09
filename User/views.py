@@ -31,7 +31,7 @@ class UserEmploymentJobStatus(CRUView):
     get_serializer = UserEmploymentJobStatusGETSerializer
 
     def post(self, request, *args, **kwargs):
-        groups_id = request.pop('groups_id', [])     
+        groups_id = request.data.pop('groups', [])     
         response = super(UserEmploymentJobStatus, self).post(request, *args, **kwargs)
         if response.status_code == 200:
             user = User.objects.get(id=request.data['user'])
