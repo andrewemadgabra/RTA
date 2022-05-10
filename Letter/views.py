@@ -59,14 +59,21 @@ class LetterDataView(CRUDView):
                 "issued_number": letter_object.validated_data.get("issued_number"),
                 "letter_title":  letter_object.validated_data.get("letter_title"),
                 "action_user": User.objects.get(pk=1),
-                "topic_subcategories":  None if letter_object.validated_data.get("topic_subcategories") == None else TopicSubcategories.objects.get(pk=letter_object.validated_data.get("topic_subcategories")),
-                "sub_actor_sender": SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_sender")),
-                "sub_actor_resciver":  SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_resciver")),
-                "delivery_user":  User.objects.get(pk=letter_object.validated_data.get("delivery_user")),
-                "delivery_method":  DeliveryMethod.objects.get(pk=letter_object.validated_data.get("delivery_method")),
-                "project_section": None if letter_object.validated_data.get("project_section") == None else ProjectSections.objects.get(pk=letter_object.validated_data.get("project_section")),
+                # None if letter_object.validated_data.get("topic_subcategories") == None else TopicSubcategories.objects.get(pk=letter_object.validated_data.get("topic_subcategories")),
+                "topic_subcategories":  letter_object.validated_data.get("topic_subcategories"),
+                # SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_sender")),
+                "sub_actor_sender": letter_object.validated_data.get("sub_actor_sender"),
+                # SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_resciver")),
+                "sub_actor_resciver": letter_object.validated_data.get("sub_actor_resciver"),
+                # User.objects.get(pk=letter_object.validated_data.get("delivery_user")),
+                "delivery_user":  letter_object.validated_data.get("delivery_user"),
+                # DeliveryMethod.objects.get(pk=letter_object.validated_data.get("delivery_method")),
+                "delivery_method":  letter_object.validated_data.get("delivery_method"),
+                # None if letter_object.validated_data.get("project_section") == None else ProjectSections.objects.get(pk=letter_object.validated_data.get("project_section")),
+                "project_section": letter_object.validated_data.get("project_section"),
                 "subject_text":  letter_object.validated_data.get("subject_text"),
-                "financial_claims":  None if letter_object.validated_data.get("financial_claims") == None else FinancialClaims.objects.get(pk=letter_object.validated_data.get("financial_claims"))
+                # None if letter_object.validated_data.get("financial_claims") == None else FinancialClaims.objects.get(pk=letter_object.validated_data.get("financial_claims"))
+                "financial_claims": letter_object.validated_data.get("financial_claims")
             })
             letter_data = LetterDataSerializer(letter_data_saved)
             return letter_data.data, True

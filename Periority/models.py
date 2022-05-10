@@ -17,10 +17,10 @@ class DeliveryMethod(AbstractDateModels):
         ordering = ('delivery_method_id',)
 
     def __str__(self):
-        return self.delivery_Method_name_en
+        return self.delivery_method_name_en
 
     def __repr__(self):
-        return self.delivery_Method_name_en
+        return self.delivery_method_name_en
 
 
 class PriorityLevel(AbstractDateModels):

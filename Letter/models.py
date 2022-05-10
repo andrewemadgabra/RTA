@@ -18,9 +18,9 @@ class LetterData(AbstractDateModels):
     topic_subcategories = models.ForeignKey(
         TopicSubcategories, models.CASCADE, blank=True, null=True)
     sub_actor_sender = models.ForeignKey(
-        SubActors, models.CASCADE, related_name="sub_actor_sender_id")
+        SubActors, models.CASCADE, related_name="sub_actor_sender", db_column="sub_actor_sender_id")
     sub_actor_resciver = models.ForeignKey(
-        SubActors, models.CASCADE, related_name="sub_actor_resciver_id")
+        SubActors, models.CASCADE, related_name="sub_actor_resciver", db_column="sub_actor_resciver_id")
     delivery_user = models.ForeignKey(User, models.CASCADE)
     delivery_method = models.ForeignKey(DeliveryMethod, models.CASCADE)
     project_section = models.ForeignKey(
