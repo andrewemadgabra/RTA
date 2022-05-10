@@ -35,19 +35,19 @@ CREATE TABLE SubActors
 
 CREATE TABLE UserEmploymentJobStatus
 (
-    [created_at] DATETIME NOT NULL ,
-    [modified_at] DATETIME NULL ,
-    [user_employment_id] INT PRIMARY KEY IDENTITY(1,1),
-    [user_id] INT NOT NULL FOREIGN KEY REFERENCES User_User([id])  
+	[created_at] DATETIME NOT NULL ,
+	[modified_at] DATETIME NULL ,
+	[user_employment_id] INT PRIMARY KEY IDENTITY(1,1),
+	[user_id] INT NOT NULL FOREIGN KEY REFERENCES User_User([id])  
     ON DELETE CASCADE ON UPDATE CASCADE,
-    [employment_id] INT NOT NULL FOREIGN KEY REFERENCES EmploymentStatus([employment_id])
+	[employment_id] INT NOT NULL FOREIGN KEY REFERENCES EmploymentStatus([employment_id])
     ON DELETE CASCADE ON UPDATE CASCADE,
-    [job_id] INT NOT NULL FOREIGN KEY REFERENCES Jobs([job_id])  
+	[job_id] INT NOT NULL FOREIGN KEY REFERENCES Jobs([job_id])  
     ON DELETE CASCADE ON UPDATE CASCADE,
-    [action_user] INT NOT NULL FOREIGN KEY REFERENCES User_User([id]),
-    [sub_actor_id] INT REFERENCES SubActors([sub_actor_id]) 
+	[action_user] INT NOT NULL FOREIGN KEY REFERENCES User_User([id]),
+	[sub_actor_id] INT REFERENCES SubActors([sub_actor_id]) 
     ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT UC_User_EmploymentStatus UNIQUE ([employment_id],[user_id])
+	CONSTRAINT UC_User_EmploymentStatus UNIQUE ([employment_id],[user_id])
 )
 
 
@@ -154,17 +154,20 @@ CREATE TABLE LetterData
 	[issued_number] INT NOT NULL ,
 	[letter_title] NVARCHAR(256) NOT NULL ,
 	[action_user] INT NOT NULL FOREIGN KEY REFERENCES User_User([id])  ON DELETE CASCADE,
-	[topic_subcategories_id] INT NOT NULL FOREIGN KEY REFERENCES TopicSubcategories([topic_subcategories_id])  ON DELETE CASCADE,
+	[topic_subcategories_id] INT NULL FOREIGN KEY REFERENCES TopicSubcategories([topic_subcategories_id])  ON DELETE CASCADE,
 	[project_section_id] INT NOT NULL FOREIGN KEY REFERENCES ProjectSections([project_section_id])  ON DELETE CASCADE,
-	[sub_actor_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_id]),
+	[sub_actor_sender_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_id]),
 	[delivery_user_id] INT FOREIGN KEY REFERENCES [dbo].[User_User]([id]),
 	[delivery_method_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[DeliveryMethod]([delivery_method_id]) ON DELETE CASCADE,
-	[project_section_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[ProjectSections]([project_section_id]),
+	[project_section_id] INT NULL FOREIGN KEY REFERENCES [dbo].[ProjectSections]([project_section_id]),
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 	CHECK ([issued_number] >= 0),
 )
 
+ALTER TABLE LetterData ADD [subject_text] NVARCHAR(1000) NOT NULL
+ALTER TABLE LetterData ADD [sub_actor_resciver_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_id])
+ALTER TABLE LetterData ADD [financial_claims_id] INT NULL FOREIGN KEY REFERENCES [dbo].[FinancialClaims]([financial_claims_id])
 
 CREATE TABLE LetterDataLogger
 (

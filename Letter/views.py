@@ -7,6 +7,11 @@ from RTA.settings import BASE_DIR, JSON_CONFIGRATION
 import os
 from django.db import transaction, IntegrityError
 from User.models import User
+from Topics.models import TopicSubcategories
+from Actors.models import SubActors
+from Periority.models import DeliveryMethod
+from Projects.models import ProjectSections
+from Financial.models import FinancialClaims
 # Create your views here.
 
 
@@ -38,12 +43,31 @@ class LetterDataView(CRUDView):
         b_serializer = self.serializer
         letter_object = b_serializer(data={"issued_number":  data.get('issued_number'),
                                            "letter_title":  data.get('letter_title'),
-                                           "action_user":  1
+                                           "action_user":  1,
+                                           "topic_subcategories":  data.get('topic_subcategories'),
+                                           "sub_actor_sender":  data.get('sub_actor_sender'),
+                                           "sub_actor_resciver": data.get('sub_actor_resciver'),
+                                           "delivery_user":  data.get('delivery_user'),
+                                           "delivery_method":  data.get('delivery_method'),
+                                           "project_section":  data.get("project_section"),
+                                           "subject_text":  data.get('subject_text'),
+                                           "financial_claims":  data.get('financial_claims')
                                            }
                                      )
         if letter_object.is_valid():
-            letter_data_saved = LetterData.objects.create(**{"issued_number": letter_object.validated_data.get(
-                "issued_number"), "letter_title":  letter_object.validated_data.get("letter_title"), "action_user": User.objects.get(pk=1)})
+            letter_data_saved = LetterData.objects.create(**{
+                "issued_number": letter_object.validated_data.get("issued_number"),
+                "letter_title":  letter_object.validated_data.get("letter_title"),
+                "action_user": User.objects.get(pk=1),
+                "topic_subcategories":  None if letter_object.validated_data.get("topic_subcategories") == None else TopicSubcategories.objects.get(pk=letter_object.validated_data.get("topic_subcategories")),
+                "sub_actor_sender": SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_sender")),
+                "sub_actor_resciver":  SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_resciver")),
+                "delivery_user":  User.objects.get(pk=letter_object.validated_data.get("delivery_user")),
+                "delivery_method":  DeliveryMethod.objects.get(pk=letter_object.validated_data.get("delivery_method")),
+                "project_section": None if letter_object.validated_data.get("project_section") == None else ProjectSections.objects.get(pk=letter_object.validated_data.get("project_section")),
+                "subject_text":  letter_object.validated_data.get("subject_text"),
+                "financial_claims":  None if letter_object.validated_data.get("financial_claims") == None else FinancialClaims.objects.get(pk=letter_object.validated_data.get("financial_claims"))
+            })
             letter_data = LetterDataSerializer(letter_data_saved)
             return letter_data.data, True
         return letter_object.errors, False

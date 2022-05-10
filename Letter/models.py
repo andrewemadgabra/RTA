@@ -5,6 +5,7 @@ from Topics.models import TopicSubcategories
 from Projects.models import ProjectSections
 from Actors.models import SubActors
 from Periority.models import DeliveryMethod
+from Financial.models import FinancialClaims
 from HelperClasses.DjangoValidator import DjangoValidator
 
 
@@ -14,12 +15,17 @@ class LetterData(AbstractDateModels):
     letter_title = models.CharField(max_length=256)
     action_user = models.ForeignKey(
         User, models.CASCADE, related_name="creator_letter", db_column="action_user")
-    topic_subcategories = models.ForeignKey(TopicSubcategories, models.CASCADE)
-    sub_actor = models.ForeignKey(SubActors, models.CASCADE)
+    topic_subcategories = models.ForeignKey(
+        TopicSubcategories, models.CASCADE, blank=True, null=True)
+    sub_actor_sender = models.ForeignKey(SubActors, models.CASCADE)
+    sub_actor_resciver = models.ForeignKey(SubActors, models.CASCADE)
     delivery_user = models.ForeignKey(User, models.CASCADE)
     delivery_method = models.ForeignKey(DeliveryMethod, models.CASCADE)
-    project_section = models.ForeignKey(ProjectSections, models.CASCADE)
-    
+    project_section = models.ForeignKey(
+        ProjectSections, models.CASCADE, blank=True, null=True)
+    subject_text = models.CharField(max_length=1000)
+    financial_claims = models.ForeignKey(
+        FinancialClaims, models.CASCAD, blank=True, null=True)
 
     class Meta:
         managed = False
