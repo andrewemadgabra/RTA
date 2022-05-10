@@ -207,8 +207,6 @@ CREATE TABLE FinancialClaims
 	[target] NVARCHAR(512),
 	[value] DEC(18,2),
 	[financial_claims_status_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[FinancialClaimsStatus]([financial_claims_status_id]) ON DELETE CASCADE,
-	[sub_actor_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_id]) ON DELETE CASCADE,
-	[letter_data_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[LetterData]([letter_data_id]) ON DELETE CASCADE,
 	[created_at] DATETIME NOT NULL,
 	[modified_at] DATETIME NULL,
 )

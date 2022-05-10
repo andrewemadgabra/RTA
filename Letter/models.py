@@ -17,15 +17,17 @@ class LetterData(AbstractDateModels):
         User, models.CASCADE, related_name="creator_letter", db_column="action_user")
     topic_subcategories = models.ForeignKey(
         TopicSubcategories, models.CASCADE, blank=True, null=True)
-    sub_actor_sender = models.ForeignKey(SubActors, models.CASCADE)
-    sub_actor_resciver = models.ForeignKey(SubActors, models.CASCADE)
+    sub_actor_sender = models.ForeignKey(
+        SubActors, models.CASCADE, related_name="sub_actor_sender_id")
+    sub_actor_resciver = models.ForeignKey(
+        SubActors, models.CASCADE, related_name="sub_actor_resciver_id")
     delivery_user = models.ForeignKey(User, models.CASCADE)
     delivery_method = models.ForeignKey(DeliveryMethod, models.CASCADE)
     project_section = models.ForeignKey(
         ProjectSections, models.CASCADE, blank=True, null=True)
     subject_text = models.CharField(max_length=1000)
     financial_claims = models.ForeignKey(
-        FinancialClaims, models.CASCAD, blank=True, null=True)
+        FinancialClaims, models.CASCADE, blank=True, null=True)
 
     class Meta:
         managed = False
