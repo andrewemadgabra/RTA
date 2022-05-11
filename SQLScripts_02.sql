@@ -167,7 +167,7 @@ CREATE TABLE LetterData
 
 ALTER TABLE LetterData ADD [subject_text] NVARCHAR(1000) NOT NULL
 ALTER TABLE LetterData ADD [sub_actor_receiver_id] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[SubActors]([sub_actor_id])
-ALTER TABLE LetterData ADD issued_data DATETIME
+ALTER TABLE LetterData ADD issued_data DATE
 ALTER TABLE LetterData ADD financial_target NVARCHAR(512) NULL
 ALTER TABLE LetterData ADD financial_value DECIMAL(18,2) NULL
 ALTER TABLE LetterData ADD financial_claims_status_id INT NULL FOREIGN KEY REFERENCES [dbo].[FinancialClaimsStatus]([financial_claims_status_id])
