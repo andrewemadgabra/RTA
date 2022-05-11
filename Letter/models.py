@@ -32,7 +32,7 @@ class LetterData(AbstractDateModels):
     financial_claims_status = models.ForeignKey(
         FinancialClaimsStatus, models.CASCADE, related_name="financial_claims_status",
         db_column="financial_claims_status_id", null=True, blank=True)
-    issued_data = models.DateField()
+    issued_date = models.DateField()
 
     class Meta:
         managed = False

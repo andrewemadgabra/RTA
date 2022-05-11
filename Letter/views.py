@@ -55,7 +55,7 @@ class LetterDataView(CRUDView):
                                            "financial_target": data.get("financial_target"),
                                            "financial_value":  data.get("financial_value"),
                                            "financial_claims_status":  data.get("financial_claims_status"),
-                                           "issued_data":  DateTimeHandler.string_to_date(data.get("issued_data"))
+                                           "issued_date":  DateTimeHandler.string_to_date(data.get("issued_date"))
                                            }
                                      )
         if letter_object.is_valid():
@@ -80,7 +80,7 @@ class LetterDataView(CRUDView):
                 "financial_target":  letter_object.validated_data.get("financial_target"),
                 "financial_value": letter_object.validated_data.get("financial_value"),
                 "financial_claims_status": letter_object.validated_data.get("financial_claims_status"),
-                "issued_data":  letter_object.validated_data.get("issued_data")
+                "issued_date":  letter_object.validated_data.get("issued_date")
             })
             letter_data = LetterDataSerializer(letter_data_saved)
             return letter_data.data, True
@@ -139,6 +139,8 @@ class LetterDataView(CRUDView):
                 if not(status):
                     raise IntegrityError
         except IntegrityError:
+            status = False
+        except TypeError:
             status = False
 
         return_status = self.post_json_reseponse_status(status)
