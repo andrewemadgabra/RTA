@@ -9,12 +9,12 @@ class DateTimeHandler(datetime.datetime):
 
     @classmethod
     def string_to_date(cls, date_string):
-        return DateTimeHandler.strptime(string=date_string, format=DateTimeHandler.date_fromate)
+        return DateTimeHandler.strptime(date_string, DateTimeHandler.date_fromate)
 
     @classmethod
     def string_to_time(cls, time_string):
-        return DateTimeHandler.strptime(string=time_string, format=DateTimeHandler.time_formate)
+        return DateTimeHandler.strptime(time_string, DateTimeHandler.time_formate)
 
     @classmethod
     def string_to_datetime(cls, datetime_string):
-        return DateTimeHandler.strptime(string=datetime_string, format=DateTimeHandler.datetime_formate)
+        return DateTimeHandler.strptime(datetime_string, DateTimeHandler.datetime_formate)
