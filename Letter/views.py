@@ -1,6 +1,7 @@
 from Letter.models import LetterData, AttachmentType, LetterAttachments
 from Letter.serializers import LetterDataSerializer, AttachmentTypeSerializer, LetterAttachmentsSerializer
 from HelperClasses.GenericView import CRUDView
+from HelperClasses.DateTimeHandler import DateTimeHandler
 from rest_framework.response import Response
 from HelperClasses.FileUpload import File
 from RTA.settings import BASE_DIR, JSON_CONFIGRATION
@@ -11,7 +12,7 @@ from Topics.models import TopicSubcategories
 from Actors.models import SubActors
 from Periority.models import DeliveryMethod
 from Projects.models import ProjectSections
-from Financial.models import FinancialClaims
+from Financial.models import FinancialClaimsStatus
 # Create your views here.
 
 
@@ -46,12 +47,15 @@ class LetterDataView(CRUDView):
                                            "action_user":  1,
                                            "topic_subcategories":  data.get('topic_subcategories'),
                                            "sub_actor_sender":  data.get('sub_actor_sender'),
-                                           "sub_actor_resciver": data.get('sub_actor_resciver'),
+                                           "sub_actor_receiver": data.get('sub_actor_receiver'),
                                            "delivery_user":  data.get('delivery_user'),
                                            "delivery_method":  data.get('delivery_method'),
                                            "project_section":  data.get("project_section"),
                                            "subject_text":  data.get('subject_text'),
-                                           "financial_claims":  data.get('financial_claims')
+                                           "financial_target": data.get("financial_target"),
+                                           "financial_value":  data.get("financial_value"),
+                                           "financial_claims_status":  data.get("financial_claims_status"),
+                                           "issued_data":  DateTimeHandler.string_to_date(data.get("issued_data"))
                                            }
                                      )
         if letter_object.is_valid():
@@ -64,7 +68,7 @@ class LetterDataView(CRUDView):
                 # SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_sender")),
                 "sub_actor_sender": letter_object.validated_data.get("sub_actor_sender"),
                 # SubActors.objects.get(pk=letter_object.validated_data.get("sub_actor_resciver")),
-                "sub_actor_resciver": letter_object.validated_data.get("sub_actor_resciver"),
+                "sub_actor_receiver": letter_object.validated_data.get("sub_actor_receiver"),
                 # User.objects.get(pk=letter_object.validated_data.get("delivery_user")),
                 "delivery_user":  letter_object.validated_data.get("delivery_user"),
                 # DeliveryMethod.objects.get(pk=letter_object.validated_data.get("delivery_method")),
@@ -73,7 +77,10 @@ class LetterDataView(CRUDView):
                 "project_section": letter_object.validated_data.get("project_section"),
                 "subject_text":  letter_object.validated_data.get("subject_text"),
                 # None if letter_object.validated_data.get("financial_claims") == None else FinancialClaims.objects.get(pk=letter_object.validated_data.get("financial_claims"))
-                "financial_claims": letter_object.validated_data.get("financial_claims")
+                "financial_target":  letter_object.validated_data.get("financial_target"),
+                "financial_value": letter_object.validated_data.get("financial_value"),
+                "financial_claims_status": letter_object.validated_data.get("financial_claims_status"),
+                "issued_data":  letter_object.validated_data.get("issued_data")
             })
             letter_data = LetterDataSerializer(letter_data_saved)
             return letter_data.data, True

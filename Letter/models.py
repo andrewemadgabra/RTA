@@ -5,7 +5,7 @@ from Topics.models import TopicSubcategories
 from Projects.models import ProjectSections
 from Actors.models import SubActors
 from Periority.models import DeliveryMethod
-from Financial.models import FinancialClaims
+from Financial.models import FinancialClaimsStatus
 from HelperClasses.DjangoValidator import DjangoValidator
 
 
@@ -19,15 +19,20 @@ class LetterData(AbstractDateModels):
         TopicSubcategories, models.CASCADE, blank=True, null=True)
     sub_actor_sender = models.ForeignKey(
         SubActors, models.CASCADE, related_name="sub_actor_sender", db_column="sub_actor_sender_id")
-    sub_actor_resciver = models.ForeignKey(
-        SubActors, models.CASCADE, related_name="sub_actor_resciver", db_column="sub_actor_resciver_id")
+    sub_actor_receiver = models.ForeignKey(
+        SubActors, models.CASCADE, related_name="sub_actor_receiver", db_column="sub_actor_receiver_id")
     delivery_user = models.ForeignKey(User, models.CASCADE)
     delivery_method = models.ForeignKey(DeliveryMethod, models.CASCADE)
     project_section = models.ForeignKey(
         ProjectSections, models.CASCADE, blank=True, null=True)
     subject_text = models.CharField(max_length=1000)
-    financial_claims = models.ForeignKey(
-        FinancialClaims, models.CASCADE, blank=True, null=True)
+    financial_target = models.CharField(max_length=512, null=True, blank=True)
+    financial_value = models.DecimalField(
+        max_digits=18, decimal_places=2, null=True, blank=True)
+    financial_claims_status = models.ForeignKey(
+        FinancialClaimsStatus, models.CASCADE, related_name="financial_claims_status",
+        db_column="financial_claims_status_id", null=True, blank=True)
+    issued_data = models.DateTimeField()
 
     class Meta:
         managed = False
