@@ -1,0 +1,128 @@
+[
+    {
+        "url": "user/system/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "user/groups/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "user/groups_system/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "user/user_assign_job/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "user/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]    
+    },
+    {
+        "url": "jobs/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "employemntstatus/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "actors/entity_classification/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "actors/main_actor/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "actors/sub_actor/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "periority/priority_level/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "periority/delivery_method/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "letter/attachment_type/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "letter/letter_data/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "topics/main_topic/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "topics/topic_classification/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "topics/topic_subcategories/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "projects/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "projects/project_sections/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "financial/financial_claims_status/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    },
+    {
+        "url": "user/logout/",
+        "methods": [
+            "GET", "POST", "PUT", "DELETE", "PATCH"
+        ]
+    }
+]
