@@ -147,6 +147,25 @@ CREATE TABLE ProjectContracts
 	[modified_at] DATETIME NULL,
 )
 
+CREATE TABLE LetterStatus
+(
+	letter_status_id INT PRIMARY KEY IDENTITY(1, 1),
+	letter_status_group INT NOT NULL,
+	letter_status_description_ar NVARCHAR(1024) NOT NULL,
+	letter_status_description_en NVARCHAR(1024) NOT NULL,
+	created_at DATETIME NOT NULL,
+	modified_at DATETIME NULL
+)
+DELETE FROM LetterStatus
+DBCC CHECKIDENT ('LetterStatus', RESEED, 1);
+INSERT INTO LetterStatus
+	(letter_status_group, letter_status_description_ar, letter_status_description_en, created_at)
+VALUES(1, N'وارد خارجى', N'External Incoming Letter', GETDATE())
+INSERT INTO LetterStatus
+	(letter_status_group, letter_status_description_ar, letter_status_description_en, created_at)
+VALUES(1, N'وارد داخى', N'Internal Incoming Letter', GETDATE())
+
+
 
 CREATE TABLE LetterData
 (
@@ -171,6 +190,7 @@ ALTER TABLE LetterData ADD issued_date DATE
 ALTER TABLE LetterData ADD financial_target NVARCHAR(512) NULL
 ALTER TABLE LetterData ADD financial_value DECIMAL(18,2) NULL
 ALTER TABLE LetterData ADD financial_claims_status_id INT NULL FOREIGN KEY REFERENCES [dbo].[FinancialClaimsStatus]([financial_claims_status_id])
+ALTER TABLE LetterData ADD letter_status_id INT NOT NULL FOREIGN KEY REFERENCES LetterStatus(letter_status_id)
 
 CREATE TABLE LetterDataLogger
 (
@@ -179,6 +199,9 @@ CREATE TABLE LetterDataLogger
 	[letter_Id] INT NOT NULL FOREIGN KEY REFERENCES LetterData([letter_data_id]) ON DELETE CASCADE,
 	[created_at] DATETIME NOT NULL DEFAULT GETDATE(),
 	[modified_at] DATETIME NULL,
+	[user_id] INT NOT NULL FOREIGN KEY REFERENCES User_User(ID),
+	[From_status] INT FOREIGN KEY REFERENCES LetterStatus(letter_status_id),
+	[To_status] INT FOREIGN KEY REFERENCES LetterStatus(letter_status_id)
 )
 
 

@@ -1,12 +1,33 @@
+from turtle import mode
 from django.db import models
 from HelperClasses.AbstractDateModels import AbstractDateModels
+from HelperClasses.DjangoValidator import DjangoValidator
 from User.models import User
 from Topics.models import TopicSubcategories
 from Projects.models import ProjectSections
 from Actors.models import SubActors
 from Periority.models import DeliveryMethod
 from Financial.models import FinancialClaimsStatus
-from HelperClasses.DjangoValidator import DjangoValidator
+
+
+class LetterStatus(AbstractDateModels):
+    letter_status_id = models.AutoField(primary_key=True)
+    letter_status_group = models.PositiveIntegerField()
+    letter_status_description_ar = models.CharField(
+        max_length=1024, validators=[DjangoValidator.validation_ArabicLettersOrNumbers])
+    letter_status_description_en = models.CharField(
+        max_length=1024, validators=[DjangoValidator.validation_EnglishLetters])
+
+    class Meta:
+        managed = False
+        db_table = "LetterStatus"
+        ordering = ('letter_status_id',)
+
+    def __str__(self):
+        return self.letter_status_description_en
+
+    def __repr__(self):
+        return self.letter_status_description_en
 
 
 class LetterData(AbstractDateModels):
@@ -33,6 +54,8 @@ class LetterData(AbstractDateModels):
         FinancialClaimsStatus, models.CASCADE, related_name="financial_claims_status",
         db_column="financial_claims_status_id", null=True, blank=True)
     issued_date = models.DateField()
+    letter_status = models.ForeignKey(
+        LetterStatus, related_name="letter_status_id", db_column="letter_status_id")
 
     class Meta:
         managed = False
@@ -44,6 +67,29 @@ class LetterData(AbstractDateModels):
 
     def __repr__(self):
         return self.letter_title
+
+
+class LetterDataLogger(AbstractDateModels):
+    log_id = models.AutoField(primary_key=True)
+    log_message = models.CharField(max_length=2048)
+    letter_data = models.ForeignKey(
+        LetterData, related_name="letter_Id", db_column="letter_Id")
+    user_id = models.ForeignKey(User, related_name="letter_user_id")
+    from_status = models.ForeignKey(
+        LetterStatus, related_name="from_status", db_column="from_status", null=True, blank=True)
+    to_status = models.ForeignKey(
+        LetterStatus, related_name="to_status", db_column="to_status")
+
+    class Meta:
+        managed = False
+        db_table = 'LetterDataLogger'
+        ordering = ('log_id',)
+
+    def __str__(self):
+        return self.log_message
+
+    def __repr__(self):
+        return self.log_message
 
 
 class AttachmentType(AbstractDateModels):
